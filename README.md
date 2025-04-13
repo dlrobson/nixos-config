@@ -1,5 +1,9 @@
 # nixos-config
 
+## ZFS setup
+
+Thank you Ivan Petkov for an extensive walkthrough: https://ipetkov.dev/blog/installing-nixos-and-zfs-on-my-desktop/
+
 ## Manual Machine Configuration
 
 1. Configure ssh-keys + Add to GitHub

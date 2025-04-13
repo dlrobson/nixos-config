@@ -12,16 +12,60 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
+  
+  # TODO: Required for 5G ethernet. Remove once this is the default kernel version
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/81ce0e51-d2ca-4c21-a749-8be862f202db";
-      fsType = "ext4";
+  boot = {
+    initrd = {
+      systemd.enable = true;
     };
+    loader = {
+      efi.canTouchEfiVariables = true;
+      # grub = {
+      #   enable = true;
+      #   device = "nodev";
+      #   efiSupport = true;
+      # };
+    };
+    initrd.luks.devices = {
+      "cryptkey" = {
+        device = "/dev/disk/by-uuid/c93cada0-5b78-4922-8a18-bcec67432932";
+	      allowDiscards = true;
+      };
+      "cryptroot" = {
+        device = "/dev/disk/by-uuid/40edc509-941a-4bbd-a436-86ec9703fc18";
+        keyFile = "/dev/mapper/cryptkey";
+	      keyFileSize = 8192;
+	      allowDiscards = true;
+      };
+    };
+  };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/05CA-4A53";
+    { device = "/dev/disk/by-uuid/BD18-9A84";
       fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
+      options = [ "fmask=0022" "dmask=0022" ];
+    };
+
+  fileSystems."/" =
+    { device = "nvme-pool/system/root";
+      fsType = "zfs";
+    };
+
+  fileSystems."/nix" =
+    { device = "nvme-pool/local/nix";
+      fsType = "zfs";
+    };
+
+  fileSystems."/var" =
+    { device = "nvme-pool/system/var";
+      fsType = "zfs";
+    };
+
+  fileSystems."/home/admin" =
+    { device = "nvme-pool/user/home/admin";
+      fsType = "zfs";
     };
 
   swapDevices = [ ];
@@ -31,7 +75,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp118s0u2.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp118s0u1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
