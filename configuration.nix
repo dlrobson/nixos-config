@@ -4,13 +4,17 @@
 
 { config, pkgs, ... }:
 
+let
+  # home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
+  unstableTarball = builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+  unstable = import unstableTarball { config = { allowUnfree = true; }; };
+in
 {
-  imports =
-    [
-      # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      (fetchTarball "https://github.com/nix-community/nixos-vscode-server/tarball/master")
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    (fetchTarball "https://github.com/nix-community/nixos-vscode-server/tarball/master")
+    # (import "${home-manager}/nixos")
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -70,8 +74,6 @@
     pulse.enable = true;
   };
   
-  services.vscode-server.enable = true;
-  
   # Disable GNOME3 auto-suspend feature
   systemd.targets.sleep.enable = false;
   systemd.targets.suspend.enable = false;
@@ -83,6 +85,7 @@
     isNormalUser = true;
     description = "admin";
     extraGroups = [ "networkmanager" "wheel" ];
+    # linger = true;
     packages = with pkgs; [
       git
     ];
@@ -90,15 +93,14 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
+ 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [];
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
+  # Enabled services
   services.openssh.enable = true;
+  services.vscode-server.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -113,4 +115,9 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
+
+  virtualisation.docker.rootless = {
+    enable = true;
+    setSocketVariable = true;
+  };
 }
