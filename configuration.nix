@@ -16,6 +16,29 @@ in
     # (import "${home-manager}/nixos")
   ];
 
+  # boot.kernelModules = [ "zfs" ];
+
+  boot.loader.systemd-boot.enable = true;
+
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.initrd.systemd.enable = true;
+  boot.initrd.luks.devices = {
+    "cryptkey" = {
+      device = "/dev/disk/by-uuid/c93cada0-5b78-4922-8a18-bcec67432932";
+      allowDiscards = true;
+    };
+    "cryptroot" = {
+      device = "/dev/disk/by-uuid/40edc509-941a-4bbd-a436-86ec9703fc18";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
+  };
+
+  # TODO: Required for 5G ethernet. Remove once this is the default kernel version
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
+
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
   networking.hostName = "nixos";

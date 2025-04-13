@@ -1,5 +1,11 @@
 # nixos-config
 
+## Updating configuration
+
+```bash
+sudo nixos-rebuild switch -I nixos-config=<path-to-this-repo>/configuration.nix
+```
+
 ## ZFS setup
 
 Thank you Ivan Petkov for an extensive walkthrough: https://ipetkov.dev/blog/installing-nixos-and-zfs-on-my-desktop/
@@ -34,3 +40,25 @@ home-manager switch -f ~/.config/nixpkgs/home.nix
 ```
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0 /dev/disk/by-uuid/<LUKS2 partition>
 ```
+
+## Issues
+
+Error
+```
+Traceback (most recent call last):
+  File "/nix/store/mr472bxdbvr41ky92csrdy5gacrklcv9-systemd-boot/bin/systemd-boot", line 435, in <module>
+    main()
+  File "/nix/store/mr472bxdbvr41ky92csrdy5gacrklcv9-systemd-boot/bin/systemd-boot", line 418, in main
+    install_bootloader(args)
+  File "/nix/store/mr472bxdbvr41ky92csrdy5gacrklcv9-systemd-boot/bin/systemd-boot", line 342, in install_bootloader
+    raise Exception("could not find any previously installed systemd-boot")
+Exception: could not find any previously installed systemd-boot
+Failed to install bootloader
+```
+
+This was solved by running
+```
+sudo bootctl install
+```
+
+and then running the nixos-rebuild command again.
