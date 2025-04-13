@@ -92,7 +92,9 @@ in
  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [];
+  environment.systemPackages = with pkgs; [
+    tpm2-tss
+  ];
 
   # Enabled services
   services.openssh.enable = true;

@@ -28,3 +28,9 @@ nix-shell '<home-manager>' -A install
 # ln -s ~/<home-manager-dotfiles-path-TODO> ~/.config/nixpkgs/home.nix
 home-manager switch -f ~/.config/nixpkgs/home.nix 
 ```
+
+## TPM setup
+
+```
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0 /dev/disk/by-uuid/<LUKS2 partition>
+```
