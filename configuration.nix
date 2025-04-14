@@ -16,10 +16,7 @@ in
     # (import "${home-manager}/nixos")
   ];
 
-  # boot.kernelModules = [ "zfs" ];
-
   boot.loader.systemd-boot.enable = true;
-
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = true;
@@ -30,6 +27,36 @@ in
     };
     "cryptroot" = {
       device = "/dev/disk/by-uuid/40edc509-941a-4bbd-a436-86ec9703fc18";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
+    "crypthdda" = {
+      device = "/dev/disk/by-uuid/0a36744b-7541-46cf-a697-1653f2024b3e";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
+    "crypthddb" = {
+      device = "/dev/disk/by-uuid/c179bd70-1a65-43a7-a7bc-794ca558659a";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
+    "crypthddc" = {
+      device = "/dev/disk/by-uuid/9cc8b846-d5df-4283-ad25-80141c6f09cf";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
+    "crypthddd" = {
+      device = "/dev/disk/by-uuid/4f387ac5-fb24-44ec-bc3b-f68250ef11ce";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
+    "crypthdde" = {
+      device = "/dev/disk/by-uuid/28d49dda-aa6c-4162-ad99-e7ab59660681";
       keyFile = "/dev/mapper/cryptkey";
       keyFileSize = 8192;
       allowDiscards = true;
@@ -49,12 +76,8 @@ in
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
   time.timeZone = "America/New_York";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_GB.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
     LC_IDENTIFICATION = "en_US.UTF-8";
@@ -99,7 +122,6 @@ in
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.admin = {
     isNormalUser = true;
     description = "admin";
@@ -116,7 +138,7 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    tpm2-tss
+    tpm2-tss # To enable automated unlocking of LUKS root partition
   ];
 
   # Enabled services
