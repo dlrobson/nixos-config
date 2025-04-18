@@ -5,7 +5,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  # home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
   unstableTarball = builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
   unstable = import unstableTarball { config = { allowUnfree = true; }; };
 in
@@ -13,7 +12,6 @@ in
   imports = [
     ./hardware-configuration.nix
     (fetchTarball "https://github.com/nix-community/nixos-vscode-server/tarball/master")
-    # (import "${home-manager}/nixos")
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -122,6 +120,8 @@ in
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
 
+  programs.fish.enable = true;
+
   users.users.admin = {
     isNormalUser = true;
     description = "admin";
@@ -158,9 +158,4 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-
-  virtualisation.docker.rootless = {
-    enable = true;
-    setSocketVariable = true;
-  };
 }
