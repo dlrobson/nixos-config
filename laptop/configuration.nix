@@ -11,6 +11,7 @@ in
     ../common
     ../hardware/luks/laptop.nix
     ../modules/services/syncthing.nix
+    ../modules/services/kmonad.nix
   ];
 
   networking.hostName = "nixos-laptop";
@@ -21,8 +22,6 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
-      "input" # Kmonad
-      "uinput" # Kmonad
     ];
     packages = with pkgs; [
       brave
@@ -39,22 +38,20 @@ in
     tpm2-tss # To enable automated unlocking of LUKS root partition
   ];
 
+  # TODO: Review: https://search.nixos.org/options?channel=24.11&from=0&size=50&sort=relevance&type=packages&query=tailscale
   services.tailscale.enable = true;
-  services.kmonad = {
-   enable = true;
-   keyboards = {
-     builtinKeyboard = { 
-       device = "/dev/input/event0";
-       config = builtins.readFile "${variables.dotfiles}/kmonad/thinkpad.kbd";
-     };
-   };
+  
+  customModules.services.kmonad = {
+    enable = true;
+    username = "robson";
+    device = "/dev/input/event0";
+    configPath = "${variables.dotfiles}/kmonad/thinkpad.kbd";
   };
   
-  # Enable our custom syncthing module with specific options
   customModules.services.syncthing = {
     enable = true;
     username = "robson";
-    homeDir = "${config.users.users.robson.home}";
+    homeDir = "/home/robson";
     guiUser = variables.syncthing_gui_user;
     guiPassword = variables.syncthing_gui_password;
     serverId = variables.syncthing_server_id;
