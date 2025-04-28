@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 { config, lib, pkgs, ... }:
 
 let
@@ -20,7 +16,6 @@ in
   boot.kernelPackages = pkgs.linuxPackages_6_12;
 
   # Use the systemd-boot EFI boot loader.
-  # boot.loader.systemd-boot.enable = true;
   networking.hostName = "nixos";
   networking.hostId = "e3e68db8";
 
@@ -34,14 +29,11 @@ in
     isNormalUser = true;
     description = "admin";
     extraGroups = [ "networkmanager" "wheel" ];
-    # linger = true;
     packages = with pkgs; [
       git
     ];
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     tpm2-tss # To enable automated unlocking of LUKS root partition
   ];

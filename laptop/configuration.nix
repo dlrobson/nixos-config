@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 { config, lib, pkgs, ... }:
 
 let
@@ -14,6 +10,7 @@ in
     ./hardware-configuration.nix
     ../common
     ../hardware/luks/laptop.nix
+    ../modules/services/syncthing.nix
   ];
 
   networking.hostName = "nixos-laptop";
@@ -24,9 +21,8 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
-      # Kmonad Requirements
-      "input"
-      "uinput"
+      "input" # Kmonad
+      "uinput" # Kmonad
     ];
     packages = with pkgs; [
       brave
@@ -49,46 +45,19 @@ in
    keyboards = {
      builtinKeyboard = { 
        device = "/dev/input/event0";
-       # Using the dotfiles variable from variables.nix
        config = builtins.readFile "${variables.dotfiles}/kmonad/thinkpad.kbd";
      };
    };
   };
-  services.syncthing = {
+  
+  # Enable our custom syncthing module with specific options
+  customModules.services.syncthing = {
     enable = true;
-    user = "robson";
-    dataDir = "${config.users.users.robson.home}/Documents";
-    configDir = "${config.users.users.robson.home}/Documents/.config/syncthing";
-    overrideDevices = true;
-    overrideFolders = true;
-    settings = {
-      gui = {
-        user = variables.syncthing_gui_user;
-        password = variables.syncthing_gui_password;
-      };
-      devices = {
-        "server" = {
-          id = variables.syncthing_server_id;
-        };
-      };
-      folders = {
-        "Gill and Dan Shared Folder" = {
-          path = "${config.users.users.robson.home}/Documents/gill-and-dan-shared";
-          devices = [ "server" ];
-          id = "7vpz3-ngn9u";
-        };
-        "Dan files" = {
-          path = "${config.users.users.robson.home}/Documents/dan-files";
-          devices = [ "server" ];
-          id = "rihg3-aiqta";
-        };
-        "Camera" = {
-          path = "${config.users.users.robson.home}/Pictures/sm-g950w_nd8z-photos";
-          devices = [ "server" ];
-          id = "sm-g950w_nd8z-photos";
-        };
-      };
-    };
+    username = "robson";
+    homeDir = "${config.users.users.robson.home}";
+    guiUser = variables.syncthing_gui_user;
+    guiPassword = variables.syncthing_gui_password;
+    serverId = variables.syncthing_server_id;
   };
 
   system.stateVersion = "24.11";
