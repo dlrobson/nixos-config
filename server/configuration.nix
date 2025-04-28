@@ -12,7 +12,7 @@ in
   imports = [
     ./hardware-configuration.nix
     (fetchTarball "https://github.com/nix-community/nixos-vscode-server/tarball/master")
-    ../common/base.nix
+    ../common
   ];
 
   boot.initrd.luks.devices = {

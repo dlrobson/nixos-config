@@ -12,7 +12,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
-    ../common/base.nix
+    ../common
   ];
 
   boot.initrd.luks.devices = {
