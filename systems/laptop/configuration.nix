@@ -8,10 +8,10 @@ in
 {
   imports = [
     ./hardware-configuration.nix
-    ../common
-    ../hardware/luks/laptop.nix
-    ../modules/services/syncthing.nix
-    ../modules/services/kmonad.nix
+    ./luks.nix
+    ../../common
+    ../../modules/services/syncthing.nix
+    ../../modules/services/kmonad.nix
   ];
 
   networking.hostName = "nixos-laptop";
@@ -33,10 +33,6 @@ in
       slack
     ];
   };
- 
-  environment.systemPackages = with pkgs; [
-    tpm2-tss # To enable automated unlocking of LUKS root partition
-  ];
 
   # TODO: Review: https://search.nixos.org/options?channel=24.11&from=0&size=50&sort=relevance&type=packages&query=tailscale
   services.tailscale.enable = true;

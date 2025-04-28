@@ -7,9 +7,9 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ./luks.nix
     (fetchTarball "https://github.com/nix-community/nixos-vscode-server/tarball/master")
-    ../common
-    ../hardware/luks/server.nix
+    ../../common
   ];
 
   # TODO: Required for 5G ethernet. Remove once this is the default kernel version
@@ -33,10 +33,6 @@ in
       git
     ];
   };
-
-  environment.systemPackages = with pkgs; [
-    tpm2-tss # To enable automated unlocking of LUKS root partition
-  ];
 
   # Enabled services
   services.openssh.enable = true;

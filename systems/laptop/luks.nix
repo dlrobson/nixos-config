@@ -13,4 +13,9 @@
       allowDiscards = true;
     };
   };
+  
+  # Package needed for automated unlocking of LUKS root partition
+  environment.systemPackages = with pkgs; [
+    tpm2-tss
+  ];
 }
