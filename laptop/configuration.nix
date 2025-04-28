@@ -13,20 +13,8 @@ in
   imports = [
     ./hardware-configuration.nix
     ../common
+    ../hardware/luks/laptop.nix
   ];
-
-  boot.initrd.luks.devices = {
-    "cryptkey" = {
-      device = "/dev/disk/by-uuid/0b11b739-1461-4054-b6d6-ae660ecccc52";
-      allowDiscards = true;
-    };
-    "cryptroot" = {
-      device = "/dev/disk/by-uuid/bf7dd485-803e-4267-b349-86385e283fbd";
-      keyFile = "/dev/mapper/cryptkey";
-      keyFileSize = 8192;
-      allowDiscards = true;
-    };
-  };
 
   networking.hostName = "nixos-laptop";
 
@@ -69,8 +57,8 @@ in
   services.syncthing = {
     enable = true;
     user = "robson";
-    dataDir = "/home/robson/Documents";
-    configDir = "/home/robson/Documents/.config/syncthing";
+    dataDir = "${config.users.users.robson.home}/Documents";
+    configDir = "${config.users.users.robson.home}/Documents/.config/syncthing";
     overrideDevices = true;
     overrideFolders = true;
     settings = {
@@ -85,17 +73,17 @@ in
       };
       folders = {
         "Gill and Dan Shared Folder" = {
-          path = "/home/robson/Documents/gill-and-dan-shared";
+          path = "${config.users.users.robson.home}/Documents/gill-and-dan-shared";
           devices = [ "server" ];
           id = "7vpz3-ngn9u";
         };
         "Dan files" = {
-          path = "/home/robson/Documents/dan-files";
+          path = "${config.users.users.robson.home}/Documents/dan-files";
           devices = [ "server" ];
           id = "rihg3-aiqta";
         };
         "Camera" = {
-          path = "/home/robson/Pictures/sm-g950w_nd8z-photos";
+          path = "${config.users.users.robson.home}/Pictures/sm-g950w_nd8z-photos";
           devices = [ "server" ];
           id = "sm-g950w_nd8z-photos";
         };
