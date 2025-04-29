@@ -1,8 +1,11 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ./home ];
-
-  home.username = builtins.getEnv "USER";
-  home.homeDirectory = builtins.getEnv "HOME";
+  imports = [ 
+    (import ./home {
+      username = builtins.getEnv "USER";
+      homeDirectory = builtins.getEnv "HOME";
+      inherit config pkgs lib;
+    })
+  ];
 }
