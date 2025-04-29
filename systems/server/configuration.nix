@@ -14,7 +14,7 @@ in
   ];
 
   # Direct import with overridden arguments
-  home-manager.users.admin = import ../../home.nix {
+  home-manager.users.admin = import ../../home {
     username = "admin";
     homeDirectory = "/home/admin";
     inherit config pkgs lib;

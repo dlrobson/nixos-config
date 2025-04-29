@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, username, homeDirectory, ... }:
 
 let
   # Detect if running in a container
@@ -18,7 +18,9 @@ in
   # Only import KMonad when not in a container and not on NixOS
   ++ lib.optional ((!isContainer) && (!isNixOS)) ./programs/kmonad.nix;
 
-  # Common home-manager settings
+  home.username = username;
+  home.homeDirectory = homeDirectory;
+
   home.stateVersion = "24.11";
   programs.home-manager.enable = true;
 }

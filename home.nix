@@ -1,12 +1,8 @@
-{ config, pkgs, lib, ... }@args:
+{ config, pkgs, lib, ... }:
 
-let
-  user = args.username or (builtins.getEnv "USER");
-  home = args.homeDirectory or (builtins.getEnv "HOME");
-in
 {
   imports = [ ./home ];
 
-  home.username = user;
-  home.homeDirectory = home;
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
 }
