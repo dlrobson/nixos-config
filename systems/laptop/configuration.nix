@@ -32,6 +32,7 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     packages = with pkgs; [
       brave
@@ -43,6 +44,9 @@ in
       slack
     ];
   };
+
+  # Docker configuration for rootless mode
+  virtualisation.docker.enable = true;
 
   # TODO: Review: https://search.nixos.org/options?channel=24.11&from=0&size=50&sort=relevance&type=packages&query=tailscale
   services.tailscale.enable = true;
