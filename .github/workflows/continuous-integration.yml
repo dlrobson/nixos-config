@@ -23,11 +23,31 @@ jobs:
             exit 1
           fi
 
+  find-systems:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+          SYSTEMS=$(find ./systems -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "matrix=${SYSTEMS}" >> $GITHUB_OUTPUT
+
+          # Validate that we found at least one system
+          SYSTEM_COUNT=$(echo $SYSTEMS | jq '. | length')
+          if [ "$SYSTEM_COUNT" -lt 1 ]; then
+            echo "Error: No system directories found in ./systems/"
+            exit 1
+          fi
+          echo "Found ${SYSTEM_COUNT} system(s) to test"
+
   nixos-test:
+    needs: find-systems
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        system: [laptop, server]
+        system: ${{ fromJson(needs.find-systems.outputs.matrix) }}
     name: nixos-${{ matrix.system }}-test
     steps:
       - uses: actions/checkout@v4
