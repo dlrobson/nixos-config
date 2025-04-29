@@ -1,92 +1,43 @@
 # nixos-config
 
+My NixOS configuration files and setup documentation.
+
 ## Updating configuration
 
 ```bash
-sudo nixos-rebuild switch -I nixos-config=<path-to-this-repo>/configuration.nix
+sudo nixos-rebuild switch -I nixos-config=<path-to-this-repo>/systems/laptop/configuration.nix
 ```
 
-## Drive setup
+## Documentation
 
-Thank you Ivan Petkov for an extensive walkthrough: https://ipetkov.dev/blog/installing-nixos-and-zfs-on-my-desktop/
+Detailed guides are available in the `notes/` directory:
 
-### Hdd Setup
+- [Disk Setup Guide](./notes/disk-setup.md) - Instructions for ZFS pool creation and disk management
+- [Post-Installation Steps](./notes/post-install.md) - Basic post-installation configuration
+- [TPM Setup Guide](./notes/tpm-setup.md) - Instructions for TPM module configuration
+- [Troubleshooting Guide](./notes/troubleshooting.md) - Solutions for common issues
 
-#### Initial setup for raidz2
+## Non-NixOS Systems
 
+For non-NixOS systems, helper scripts are available:
+
+- [KMonad Setup for Debian](./scripts/debian/kmonad-setup.sh) - Script for installing and configuring KMonad on Debian-based systems
+- [Configure Dotfiles](./scripts/debian/configure-dotfiles.sh) - Script for installing home-manager and deploying dotfiles on Debian-based systems
+
+## Dotfiles Implementation
+
+### NixOS Systems
+On NixOS, dotfiles are managed through the native system configuration and home-manager module. The configuration is applied automatically when running `nixos-rebuild switch`.
+
+### Debian/Ubuntu Systems
+On Debian-based systems, dotfiles are managed using standalone home-manager. The `configure-dotfiles.sh` script:
+1. Requires the Nix package manager to be pre-installed (install from https://nixos.org/download.html)
+2. Sets up home-manager through nix channels if not already installed
+3. Deploys the dotfiles configuration from this repository
+
+To manually apply the dotfiles configuration after changes, run:
 ```bash
-sudo zpool create hdd-pool raidz2 \
-  /dev/mapper/crypthdda \
-  /dev/mapper/crypthddb \
-  /dev/mapper/crypthddc \
-  /dev/mapper/crypthddd \
-  /dev/mapper/crypthdde
-sudo zfs set mountpoint=none hdd-pool
-sudo zfs set compression=lz4 hdd-pool
-sudo zfs set atime=off hdd-pool
-sudo zfs create -o compression=lz4 -o mountpoint=legacy hdd-pool/data
-sudo zfs create -o compression=lz4 -o mountpoint=legacy hdd-pool/media
-
-sudo zfs create -o compression=lz4 -o mountpoint=legacy hdd-pool/reserved
-sudo zfs set quota=500G hdd-pool/reserved
-sudo zfs set reservation=500G hdd-pool/reserved
-
-sudo mkdir -p /mnt/storage/{data,media}
-sudo mount -t zfs hdd-pool/data /mnt/storage/data
-sudo mount -t zfs hdd-pool/media /mnt/storage/media
+home-manager switch -b backup -f /path/to/this/repo/home.nix
 ```
 
-#### Adding a HDD to the pool
-```bash
-sudo cryptsetup luksFormat --type luks2 /dev/sda1 
-sudo cryptsetup luksAddKey --new-keyfile-size 8192 /dev/sda1 /dev/mapper/cryptkey
-sudo cryptsetup luksOpen --keyfile-size 8192 --key-file /dev/mapper/cryptkey --allow-discards /dev/sda1 crypthdda
-```
-
-## Manual Machine Configuration
-
-1. Configure ssh-keys + Add to GitHub
-2. To allow vscode-server service to run:
-```
-systemctl --user start auto-fix-vscode-server.service
-```
-3. To enable rootless docker
-```
-systemctl --user enable docker.service
-systemctl --user start docker.service
-```
-
-## TPM setup
-
-Enroll the TPM2 chip with the LUKS2 partition. This is required for unlocking the LUKS2 partition at boot time.
-
-```
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0 /dev/disk/by-uuid/<LUKS2 partition>
-```
-
-## Future
-
-1. Add another NVME drive to the zfs mirror:
-  - https://forums.freebsd.org/threads/howto-convert-single-disk-zfs-on-root-to-mirror.49702/
-
-## Potential Issues
-
-Error
-```
-Traceback (most recent call last):
-  File "/nix/store/mr472bxdbvr41ky92csrdy5gacrklcv9-systemd-boot/bin/systemd-boot", line 435, in <module>
-    main()
-  File "/nix/store/mr472bxdbvr41ky92csrdy5gacrklcv9-systemd-boot/bin/systemd-boot", line 418, in main
-    install_bootloader(args)
-  File "/nix/store/mr472bxdbvr41ky92csrdy5gacrklcv9-systemd-boot/bin/systemd-boot", line 342, in install_bootloader
-    raise Exception("could not find any previously installed systemd-boot")
-Exception: could not find any previously installed systemd-boot
-Failed to install bootloader
-```
-
-This was solved by running
-```
-sudo bootctl install
-```
-
-and then running the nixos-rebuild command again.
+This approach ensures consistent configuration across different Linux distributions while using the same underlying home-manager technology.

@@ -12,7 +12,17 @@ in
     ../../common
     ../../modules/services/syncthing.nix
     ../../modules/services/kmonad.nix
+    "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"}/nixos"
   ];
+  
+  # Direct import with overridden arguments
+  home-manager.users.robson = import ../../home.nix {
+    username = "robson";
+    homeDirectory = "/home/robson";
+    inherit config pkgs lib;
+  };
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
 
   networking.hostName = "nixos-laptop";
 
@@ -41,7 +51,7 @@ in
     enable = true;
     username = "robson";
     device = "/dev/input/event0";
-    configPath = "${variables.dotfiles}/kmonad/thinkpad.kbd";
+    configPath = builtins.toString ../../home/kmonad/thinkpad.kbd;
   };
   
   customModules.services.syncthing = {

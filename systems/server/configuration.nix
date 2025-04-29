@@ -10,7 +10,17 @@ in
     ./luks.nix
     (fetchTarball "https://github.com/nix-community/nixos-vscode-server/tarball/master")
     ../../common
+    "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"}/nixos"
   ];
+
+  # Direct import with overridden arguments
+  home-manager.users.admin = import ../../home.nix {
+    username = "admin";
+    homeDirectory = "/home/admin";
+    inherit config pkgs lib;
+  };
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
 
   # TODO: Required for 5G ethernet. Remove once this is the default kernel version
   boot.kernelPackages = pkgs.linuxPackages_6_12;
