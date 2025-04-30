@@ -1,9 +1,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  unstableTarball = builtins.fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-  unstable = import unstableTarball { config = { allowUnfree = true; }; };
   variables = import ./variables.nix;
 in {
   imports = [
