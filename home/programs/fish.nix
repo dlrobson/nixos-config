@@ -3,10 +3,16 @@
 {
   programs.fish = {
     enable = true;
-    plugins = [{
-      name = "plugin-git";
-      src = pkgs.fishPlugins.plugin-git.src;
-    }];
+    plugins = [
+      {
+        name = "plugin-git";
+        src = pkgs.fishPlugins.plugin-git.src;
+      }
+      {
+        name = "done";
+        src = pkgs.fishPlugins.done.src;
+      }
+    ];
 
     functions = {
       clean_branches = ''

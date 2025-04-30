@@ -12,6 +12,8 @@ in {
     ./programs/git.nix
     ./programs/vim.nix
     ./programs/tmux.nix
+    # TODO: Make this optional on having a desktop environment
+    ./programs/brave.nix
     ./programs/bash.nix
     ./programs/fish.nix
   ]
