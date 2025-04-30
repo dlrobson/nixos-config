@@ -43,7 +43,7 @@ in {
     isNormalUser = true;
     description = "admin";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ git ];
+    packages = with pkgs; [ ];
   };
 
   # Enabled services

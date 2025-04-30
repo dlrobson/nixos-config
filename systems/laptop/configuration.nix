@@ -33,7 +33,7 @@ in {
     isNormalUser = true;
     description = "robson";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [ vscode alacritty htop git libreoffice-qt slack ];
+    packages = with pkgs; [ libreoffice-qt slack ];
   };
 
   # Docker configuration for rootless mode

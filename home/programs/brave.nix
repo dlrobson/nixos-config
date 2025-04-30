@@ -5,8 +5,9 @@
     enable = true;
     package = pkgs.brave;
     extensions = [
-      #   { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
+      { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
+      { id = "nffaoalbilbmmfgbnbgppjihopabppdk"; } # Video Speed Controller
+      { id = "neebplgakaahbhdphmkckjjcegoiijjo"; } # Keepa
     ];
-    commandLineArgs = [ ];
   };
 }
