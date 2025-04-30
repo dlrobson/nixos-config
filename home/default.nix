@@ -5,9 +5,10 @@ let
     || lib.pathExists "/run/.containerenv";
 
   isNixOS = builtins.pathExists "/etc/nixos";
-  
-  isGnome = config.services.xserver.desktopManager.gnome.enable or 
-            (builtins.getEnv "XDG_CURRENT_DESKTOP" == "GNOME");
+
+  isGnome =
+    config.services.xserver.desktopManager.gnome.enable or (builtins.getEnv
+      "XDG_CURRENT_DESKTOP" == "GNOME");
 in {
   imports = [
     ./programs/git.nix
