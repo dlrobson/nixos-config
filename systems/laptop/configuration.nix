@@ -1,10 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let
-  unstableTarball = builtins.fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-  unstable = import unstableTarball { config = { allowUnfree = true; }; };
-  variables = import ./variables.nix;
+let variables = import ./variables.nix;
 in {
   imports = [
     ./hardware-configuration.nix
@@ -33,7 +29,7 @@ in {
     isNormalUser = true;
     description = "robson";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [ vscode alacritty htop git libreoffice-qt slack ];
+    packages = with pkgs; [ libreoffice-qt slack ];
   };
 
   # Docker configuration for rootless mode

@@ -1,10 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let
-  unstableTarball = builtins.fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-  unstable = import unstableTarball { config = { allowUnfree = true; }; };
-in {
+{
   imports = [
     ./hardware-configuration.nix
     ./luks.nix
@@ -43,7 +39,7 @@ in {
     isNormalUser = true;
     description = "admin";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ git ];
+    packages = with pkgs; [ ];
   };
 
   # Enabled services
