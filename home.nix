@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ 
+  imports = [
     (import ./home {
       username = builtins.getEnv "USER";
       homeDirectory = builtins.getEnv "HOME";

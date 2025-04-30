@@ -1,16 +1,20 @@
 { config, lib, pkgs, ... }:
 
 let
-  unstableTarball = builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+  unstableTarball = builtins.fetchTarball
+    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
   unstable = import unstableTarball { config = { allowUnfree = true; }; };
-in
-{
+in {
   imports = [
     ./hardware-configuration.nix
     ./luks.nix
-    (fetchTarball "https://github.com/nix-community/nixos-vscode-server/tarball/master")
+    (fetchTarball
+      "https://github.com/nix-community/nixos-vscode-server/tarball/master")
     ../../common
-    "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"}/nixos"
+    "${
+      builtins.fetchTarball
+      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
+    }/nixos"
   ];
 
   # Direct import with overridden arguments
@@ -39,9 +43,7 @@ in
     isNormalUser = true;
     description = "admin";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      git
-    ];
+    packages = with pkgs; [ git ];
   };
 
   # Enabled services

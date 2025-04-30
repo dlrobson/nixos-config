@@ -4,50 +4,49 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "thunderbolt" "usbhid" "sd_mod" ];
+  boot.initrd.availableKernelModules =
+    [ "nvme" "xhci_pci" "ahci" "thunderbolt" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "nvme-pool/system/root";
-      fsType = "zfs";
-    };
+  fileSystems."/" = {
+    device = "nvme-pool/system/root";
+    fsType = "zfs";
+  };
 
-  fileSystems."/nix" =
-    { device = "nvme-pool/local/nix";
-      fsType = "zfs";
-    };
+  fileSystems."/nix" = {
+    device = "nvme-pool/local/nix";
+    fsType = "zfs";
+  };
 
-  fileSystems."/var" =
-    { device = "nvme-pool/system/var";
-      fsType = "zfs";
-    };
+  fileSystems."/var" = {
+    device = "nvme-pool/system/var";
+    fsType = "zfs";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/BD18-9A84";
-      fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/BD18-9A84";
+    fsType = "vfat";
+    options = [ "fmask=0022" "dmask=0022" ];
+  };
 
-  fileSystems."/home/admin" =
-    { device = "nvme-pool/user/home/admin";
-      fsType = "zfs";
-    };
+  fileSystems."/home/admin" = {
+    device = "nvme-pool/user/home/admin";
+    fsType = "zfs";
+  };
 
-  fileSystems."/mnt/storage/data" =
-    { device = "hdd-pool/data";
-      fsType = "zfs";
-    };
+  fileSystems."/mnt/storage/data" = {
+    device = "hdd-pool/data";
+    fsType = "zfs";
+  };
 
-  fileSystems."/mnt/storage/media" =
-    { device = "hdd-pool/media";
-      fsType = "zfs";
-    };
+  fileSystems."/mnt/storage/media" = {
+    device = "hdd-pool/media";
+    fsType = "zfs";
+  };
 
   swapDevices = [ ];
 
@@ -60,5 +59,6 @@
   # networking.interfaces.wlp7s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode =
+    lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

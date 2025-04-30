@@ -1,43 +1,42 @@
 { config, lib, pkgs, ... }:
 
-let
-  cfg = config.customModules.services.syncthing;
-in
-{
+let cfg = config.customModules.services.syncthing;
+in {
   options.customModules.services.syncthing = {
     enable = lib.mkEnableOption "Enable syncthing service";
-    
+
     username = lib.mkOption {
       type = lib.types.str;
       default = "robson";
       description = "Username for the syncthing service";
     };
-    
+
     homeDir = lib.mkOption {
       type = lib.types.str;
       description = "Home directory for the syncthing user";
       default = "/home/robson";
     };
-    
+
     guiUser = lib.mkOption {
       type = lib.types.str;
       description = "Username for the Syncthing GUI";
       default = "admin";
     };
-    
+
     guiPassword = lib.mkOption {
       type = lib.types.str;
       description = "Password for the Syncthing GUI";
       default = "admin";
     };
-    
+
     serverId = lib.mkOption {
       type = lib.types.str;
       description = "Device ID for the server";
-      example = "XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX";
+      example =
+        "XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX";
     };
   };
-  
+
   config = lib.mkIf cfg.enable {
     services.syncthing = {
       enable = true;
@@ -51,11 +50,7 @@ in
           user = cfg.guiUser;
           password = cfg.guiPassword;
         };
-        devices = {
-          "server" = {
-            id = cfg.serverId;
-          };
-        };
+        devices = { "server" = { id = cfg.serverId; }; };
         folders = {
           "Gill and Dan Shared Folder" = {
             path = "${cfg.homeDir}/Documents/gill-and-dan-shared";

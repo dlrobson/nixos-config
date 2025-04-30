@@ -44,7 +44,8 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    tpm2-tss # To enable automated unlocking of LUKS root partition
-  ];
+  environment.systemPackages = with pkgs;
+    [
+      tpm2-tss # To enable automated unlocking of LUKS root partition
+    ];
 }

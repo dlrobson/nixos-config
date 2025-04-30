@@ -23,6 +23,22 @@ jobs:
             exit 1
           fi
 
+  nix-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Check Nix formatting
+        run: |
+          echo "Checking Nix file formatting..."
+          nix-shell -p nixfmt-classic --run "find . -name \"*.nix\" -type f | xargs nixfmt --check"
+          if [ $? -ne 0 ]; then
+            echo "Error: Some Nix files are not properly formatted."
+            exit 1
+          fi
+
   find-systems:
     runs-on: ubuntu-latest
     outputs:
