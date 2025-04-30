@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let
-  variables = import ./variables.nix;
+let variables = import ./variables.nix;
 in {
   imports = [
     ./hardware-configuration.nix
