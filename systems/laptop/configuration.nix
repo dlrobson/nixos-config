@@ -4,9 +4,7 @@ let
   unstableTarball = builtins.fetchTarball
     "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
   unstable = import unstableTarball { config = { allowUnfree = true; }; };
-  variablesFile = ./variables.nix;
-  variables =
-    if builtins.pathExists variablesFile then import variablesFile else { };
+  variables = import ./variables.nix;
 in {
   imports = [
     ./hardware-configuration.nix
@@ -55,7 +53,7 @@ in {
     enable = true;
     username = "robson";
     homeDir = "/home/robson";
-    serverId = variables.syncthing_server_id or "";
+    serverId = variables.syncthing_server_id;
   } // lib.optionalAttrs (variables ? syncthing_gui_user) {
     guiUser = variables.syncthing_gui_user;
   } // lib.optionalAttrs (variables ? syncthing_gui_password) {
