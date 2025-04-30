@@ -5,15 +5,11 @@
     enable = true;
     userName = "Daniel Robson";
     userEmail = "danr.236@gmail.com";
-    
-    includes = [
-      {
-        condition = "hasconfig:remote.*.url:git@gitlab.com:ouster/*/**";
-        contents = {
-          user.email = "daniel.robson@ouster.io";
-        };
-      }
-    ];
+
+    includes = [{
+      condition = "hasconfig:remote.*.url:git@gitlab.com:ouster/*/**";
+      contents = { user.email = "daniel.robson@ouster.io"; };
+    }];
 
     extraConfig = {
       pull.rebase = true;
