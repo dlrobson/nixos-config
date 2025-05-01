@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, homeDirectory, isGnome, ... }:
+{ config, lib, pkgs, username, homeDirectory, ... }:
 
 let
   isContainer = builtins.pathExists "/.dockerenv"
@@ -15,9 +15,9 @@ in {
   ] ++ lib.optionals (!isContainer) [
     ./programs/alacritty.nix
     ./programs/brave.nix
+    ./desktop/gnome.nix
     ./programs/vscode.nix
-  ] ++ lib.optional ((!isContainer) && (!isNixOS)) ./programs/kmonad.nix
-    ++ lib.optional isGnome ./desktop/gnome.nix;
+  ] ++ lib.optional ((!isContainer) && (!isNixOS)) ./programs/kmonad.nix;
 
   programs.htop.enable = true;
 

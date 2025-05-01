@@ -12,6 +12,10 @@
         name = "done";
         src = pkgs.fishPlugins.done.src;
       }
+      {
+        name = "z";
+        src = pkgs.fishPlugins.z.src;
+      }
     ];
 
     functions = {

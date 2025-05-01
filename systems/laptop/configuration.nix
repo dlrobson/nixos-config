@@ -18,7 +18,6 @@ in {
   home-manager.users.robson = import ../../home {
     username = "robson";
     homeDirectory = "/home/robson";
-    isGnome = config.services.xserver.desktopManager.gnome.enable;
     inherit config pkgs lib;
   };
   home-manager.useGlobalPkgs = true;
