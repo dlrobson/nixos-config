@@ -15,6 +15,7 @@ in {
   ] ++ lib.optionals (!isContainer) [
     ./programs/alacritty.nix
     ./programs/brave.nix
+    ./desktop/gnome.nix
     ./programs/vscode.nix
   ] ++ lib.optional ((!isContainer) && (!isNixOS)) ./programs/kmonad.nix;
 
