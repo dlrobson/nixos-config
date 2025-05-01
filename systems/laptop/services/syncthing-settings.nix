@@ -12,8 +12,10 @@ in {
     overrideFolders = true;
     settings = {
       gui = {
-        user = lib.optionalString (variables ? syncthing_gui_user) variables.syncthing_gui_user;
-        password = lib.optionalString (variables ? syncthing_gui_password) variables.syncthing_gui_password;
+        user = lib.optionalString (variables ? syncthing_gui_user)
+          variables.syncthing_gui_user;
+        password = lib.optionalString (variables ? syncthing_gui_password)
+          variables.syncthing_gui_password;
       };
       devices = { "server" = { id = variables.syncthing_server_id; }; };
       folders = {
