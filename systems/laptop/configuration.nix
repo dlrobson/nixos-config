@@ -1,12 +1,12 @@
 { config, lib, pkgs, ... }:
 
-let variables = import ./variables.nix;
-in {
+{
   imports = [
-    ./hardware-configuration.nix
-    ./luks.nix
+    ./hardware/hardware-configuration.nix
+    ./hardware/luks.nix
+    ./hardware/power-settings.nix
+    ./services/syncthing-settings.nix
     ../../common
-    ../../modules/services/syncthing.nix
     ../../modules/services/kmonad.nix
     "${
       builtins.fetchTarball
@@ -43,17 +43,6 @@ in {
     username = "robson";
     device = "/dev/input/event0";
     configPath = builtins.toString ../../home/kmonad/thinkpad.kbd;
-  };
-
-  customModules.services.syncthing = {
-    enable = true;
-    username = "robson";
-    homeDir = "/home/robson";
-    serverId = variables.syncthing_server_id;
-  } // lib.optionalAttrs (variables ? syncthing_gui_user) {
-    guiUser = variables.syncthing_gui_user;
-  } // lib.optionalAttrs (variables ? syncthing_gui_password) {
-    guiPassword = variables.syncthing_gui_password;
   };
 
   system.stateVersion = "24.11";
