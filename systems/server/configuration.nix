@@ -2,11 +2,11 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
-    ./luks.nix
+    ./hardware/hardware-configuration.nix
+    ./hardware/luks.nix
+    ../../common
     (fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master")
-    ../../common
     "${
       builtins.fetchTarball
       "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
@@ -45,6 +45,7 @@
   # Enabled services
   services.openssh.enable = true;
   services.vscode-server.enable = true;
+  services.tailscale.enable = true;
 
   system.stateVersion = "24.11";
 }
