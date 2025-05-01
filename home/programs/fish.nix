@@ -16,6 +16,10 @@
         name = "z";
         src = pkgs.fishPlugins.z.src;
       }
+      {
+        name = "hydro";
+        src = pkgs.fishPlugins.hydro.src;
+      }
     ];
 
     functions = {
