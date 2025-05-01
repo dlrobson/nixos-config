@@ -1,6 +1,17 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  variables = import ./variables.nix;
+
+  # Define unstable here at the top level
+  unstableTarball = fetchTarball
+    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+
+  unstable = import unstableTarball {
+    config = { allowUnfree = true; };
+    system = pkgs.system;
+  };
+in {
   imports = [
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
@@ -13,6 +24,8 @@
       "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
     }/nixos"
   ];
+
+  nixpkgs.overlays = [ (final: prev: { unstable = unstable; }) ];
 
   # Direct import with overridden arguments
   home-manager.users.robson = import ../../home {

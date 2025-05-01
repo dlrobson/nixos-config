@@ -3,6 +3,10 @@
 {
   programs.fish = {
     enable = true;
+    package = pkgs.unstable.fish;
+    interactiveShellInit = ''
+      set fish_greeting # Disable greeting
+    '';
     plugins = [
       {
         name = "plugin-git";
