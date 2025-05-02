@@ -9,7 +9,7 @@ let
 
   unstable = import unstableTarball {
     config = { allowUnfree = true; };
-    system = pkgs.system;
+    inherit (pkgs) system;
   };
 in {
   imports = [
@@ -25,16 +25,17 @@ in {
     }/nixos"
   ];
 
-  nixpkgs.overlays = [ (final: prev: { unstable = unstable; }) ];
+  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
 
-  # Direct import with overridden arguments
-  home-manager.users.robson = import ../../home {
-    username = "robson";
-    homeDirectory = "/home/robson";
-    inherit config pkgs lib;
+  home-manager = {
+    users.robson = import ../../home {
+      username = "robson";
+      homeDirectory = "/home/robson";
+      inherit config pkgs lib;
+    };
+    useGlobalPkgs = true;
+    useUserPackages = true;
   };
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
 
   networking.hostName = "nixos-laptop";
 

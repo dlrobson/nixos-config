@@ -32,7 +32,7 @@ in {
       enable = true;
       keyboards = {
         builtinKeyboard = {
-          device = cfg.device;
+          inherit (cfg) device;
           config = builtins.readFile cfg.configPath;
         };
       };

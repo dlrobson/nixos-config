@@ -2,9 +2,13 @@
 
 {
   # Boot configuration
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.initrd.systemd.enable = true;
+  boot = {
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
+    };
+    initrd.systemd.enable = true;
+  };
 
   # Networking basics
   networking.networkmanager.enable = true;

@@ -11,7 +11,7 @@ let
 
   isNixOS = builtins.pathExists "/etc/nixos";
 in {
-  nixpkgs.overlays = [ (final: prev: { unstable = unstable; }) ];
+  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
 
   imports = [
     ./programs/git.nix
@@ -28,9 +28,10 @@ in {
 
   programs.htop.enable = true;
 
-  home.username = username;
-  home.homeDirectory = homeDirectory;
+  home = {
+    inherit username homeDirectory;
+    stateVersion = "24.11";
+  };
 
-  home.stateVersion = "24.11";
   programs.home-manager.enable = true;
 }
