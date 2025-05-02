@@ -8,7 +8,7 @@ let
 
   unstable = import unstableTarball {
     config = { allowUnfree = true; };
-    system = pkgs.system;
+    inherit (pkgs) system;
   };
 in {
   imports = [
@@ -23,16 +23,17 @@ in {
     }/nixos"
   ];
 
-  nixpkgs.overlays = [ (final: prev: { unstable = unstable; }) ];
+  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
 
-  # Direct import with overridden arguments
-  home-manager.users.admin = import ../../home {
-    username = "admin";
-    homeDirectory = "/home/admin";
-    inherit config pkgs lib;
+  home-manager = {
+    users.admin = import ../../home {
+      username = "admin";
+      homeDirectory = "/home/admin";
+      inherit config pkgs lib;
+    };
+    useGlobalPkgs = true;
+    useUserPackages = true;
   };
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
 
   # TODO: Required for 5G ethernet. Remove once this is the default kernel version
   boot.kernelPackages = pkgs.linuxPackages_6_12;
@@ -42,10 +43,12 @@ in {
   networking.hostId = "e3e68db8";
 
   # Disable GNOME3 auto-suspend feature
-  systemd.targets.sleep.enable = false;
-  systemd.targets.suspend.enable = false;
-  systemd.targets.hibernate.enable = false;
-  systemd.targets.hybrid-sleep.enable = false;
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
 
   users.users.admin = {
     isNormalUser = true;
@@ -55,9 +58,12 @@ in {
   };
 
   # Enabled services
-  services.openssh.enable = true;
-  services.vscode-server.enable = true;
-  services.tailscale.enable = true;
+  services = {
+    openssh.enable = true;
+
+    vscode-server.enable = true;
+    tailscale.enable = true;
+  };
 
   system.stateVersion = "24.11";
 }

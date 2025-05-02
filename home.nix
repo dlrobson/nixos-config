@@ -9,13 +9,8 @@ in {
   xdg.mime.enable = true;
   xdg.systemDirs.data = [ "${homeDirectory}/.nix-profile/share/applications" ];
 
-  imports = [
-    (import ./home {
-      homeDirectory = homeDirectory;
-      username = username;
-      inherit config pkgs lib;
-    })
-  ];
+  imports =
+    [ (import ./home { inherit config pkgs lib homeDirectory username; }) ];
 
   nixpkgs.config.allowUnfree = true;
 }

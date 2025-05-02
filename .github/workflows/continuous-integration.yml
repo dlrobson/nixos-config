@@ -49,7 +49,7 @@ jobs:
       - name: Check Nix formatting
         run: |
           echo "Checking Nix lints..."
-          nix-shell -p statix --run "statix check"
+          nix-shell -p statix --run "statix check --ignore **/hardware-configuration.nix"
           if [ $? -ne 0 ]; then
             echo "Error: Some Nix files have linting issues."
             exit 1
