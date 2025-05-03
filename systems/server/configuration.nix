@@ -55,6 +55,9 @@ in {
     description = "admin";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [ ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
+    ];
   };
 
   # Enabled services
