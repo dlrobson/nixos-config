@@ -28,6 +28,12 @@ in {
 
   programs.htop.enable = true;
 
+  # TODO(dan): Not working as it is
+  programs.rbw = {
+    enable = true;
+    settings.email = "danr.236@gmail.com";
+  };
+
   home = {
     inherit username homeDirectory;
     stateVersion = "24.11";
