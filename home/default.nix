@@ -14,24 +14,26 @@ in {
   nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
 
   imports = [
-    ./programs/git.nix
-    ./programs/vim.nix
-    ./programs/tmux.nix
     ./programs/bash.nix
     ./programs/fish.nix
+    ./programs/git.nix
+    ./programs/rbw.nix
+    ./programs/tmux.nix
+    ./programs/vim.nix
   ] ++ lib.optionals (!isContainer) [
+    ./desktop/gnome.nix
     ./programs/alacritty.nix
     ./programs/brave.nix
-    ./desktop/gnome.nix
     ./programs/vscode.nix
   ] ++ lib.optional ((!isContainer) && (!isNixOS)) ./programs/kmonad.nix;
 
-  programs.htop.enable = true;
+  programs = {
+    home-manager.enable = true;
+    htop.enable = true;
+  };
 
   home = {
     inherit username homeDirectory;
     stateVersion = "24.11";
   };
-
-  programs.home-manager.enable = true;
 }
