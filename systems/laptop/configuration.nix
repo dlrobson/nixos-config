@@ -24,10 +24,18 @@ in {
       builtins.fetchTarball
       "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
     }/nixos"
-    "${builtins.fetchTarball "https://github.com/ryantm/agenix/archive/main.tar.gz"}/modules/age.nix"
+    "${
+      builtins.fetchTarball
+      "https://github.com/ryantm/agenix/archive/main.tar.gz"
+    }/modules/age.nix"
   ];
 
-  environment.systemPackages = [ (pkgs.callPackage "${builtins.fetchTarball "https://github.com/ryantm/agenix/archive/main.tar.gz"}/pkgs/agenix.nix" {}) ];
+  environment.systemPackages = [
+    (pkgs.callPackage "${
+        builtins.fetchTarball
+        "https://github.com/ryantm/agenix/archive/main.tar.gz"
+      }/pkgs/agenix.nix" { })
+  ];
 
   nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
 
