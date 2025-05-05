@@ -4,6 +4,7 @@ in {
   imports = [
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
+    ./services/restic.nix
     ../../common
     ../../modules/services/home-manager.nix
     (fetchTarball
