@@ -11,20 +11,13 @@ in {
     ./services/restic.nix
     ../../common
     ../../modules/services/kmonad.nix
-    "${
-      builtins.fetchTarball
-      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
-    }/nixos"
+    ../../modules/services/home-manager.nix
   ];
 
-  home-manager = {
-    users.robson = import ../../home {
-      username = "robson";
-      homeDirectory = "/home/robson";
-      inherit config pkgs lib;
-    };
-    useGlobalPkgs = true;
-    useUserPackages = true;
+  customModules.services.homeManager = {
+    enable = true;
+    username = "robson";
+    homeDirectory = "/home/robson";
   };
 
   networking.hostName = "nixos-laptop";

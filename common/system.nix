@@ -1,6 +1,13 @@
 { config, lib, pkgs, ... }:
 
 {
+  imports = [
+    "${
+      builtins.fetchTarball
+      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
+    }/nixos"
+  ];
+
   # Boot configuration
   boot = {
     loader = {

@@ -6,22 +6,15 @@ in {
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
     ../../common
+    ../../modules/services/home-manager.nix
     (fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master")
-    "${
-      builtins.fetchTarball
-      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
-    }/nixos"
   ];
 
-  home-manager = {
-    users.admin = import ../../home {
-      username = "admin";
-      homeDirectory = "/home/admin";
-      inherit config pkgs lib;
-    };
-    useGlobalPkgs = true;
-    useUserPackages = true;
+  customModules.services.homeManager = {
+    enable = true;
+    username = "admin";
+    homeDirectory = "/home/admin";
   };
 
   # TODO: Required for 5G ethernet. Remove once this is the default kernel version
