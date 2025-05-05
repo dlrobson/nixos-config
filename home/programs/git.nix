@@ -16,5 +16,9 @@
       core.editor = "vi";
       init.defaultBranch = "main";
     };
+    difftastic = {
+      enable = true;
+      package = pkgs.unstable.difftastic;
+    };
   };
 }
