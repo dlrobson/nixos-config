@@ -50,6 +50,4 @@ in {
     vscode-server.enable = true;
     tailscale.enable = true;
   };
-
-  system.stateVersion = "24.11";
 }

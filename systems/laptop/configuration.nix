@@ -38,6 +38,4 @@ in {
     device = "/dev/input/event0";
     configPath = builtins.toString ../../home/kmonad/thinkpad.kbd;
   };
-
-  system.stateVersion = "24.11";
 }
