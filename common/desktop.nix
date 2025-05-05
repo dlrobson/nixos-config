@@ -20,6 +20,10 @@
         variant = "";
       };
     };
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn;
+    };
   };
 
   # Sound with pipewire
