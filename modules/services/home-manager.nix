@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let 
-  cfg = config.customModules.services.homeManager;
+let cfg = config.customModules.services.homeManager;
 in {
   options.customModules.services.homeManager = {
     enable = lib.mkEnableOption "Enable Home Manager configuration";
@@ -20,8 +19,7 @@ in {
   config = lib.mkIf cfg.enable {
     home-manager = {
       users.${cfg.username} = import ../../home {
-        username = cfg.username;
-        homeDirectory = cfg.homeDirectory;
+        inherit (cfg) username homeDirectory;
         inherit config pkgs lib;
       };
       useGlobalPkgs = true;

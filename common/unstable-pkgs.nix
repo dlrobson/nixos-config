@@ -8,6 +8,4 @@ let
     config = { allowUnfree = true; };
     inherit (pkgs) system;
   };
-in {
-  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
-}
+in { nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ]; }
