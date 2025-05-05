@@ -17,7 +17,6 @@ in {
     ./hardware/luks.nix
     ./hardware/power-settings.nix
     ./services/syncthing-settings.nix
-    ./services/restic.nix
     ../../common
     ../../modules/services/kmonad.nix
     "${
