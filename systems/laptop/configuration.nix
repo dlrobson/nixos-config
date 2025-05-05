@@ -2,15 +2,6 @@
 
 let
   variables = import ./variables.nix;
-
-  # Define unstable here at the top level
-  unstableTarball = fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-
-  unstable = import unstableTarball {
-    config = { allowUnfree = true; };
-    inherit (pkgs) system;
-  };
 in {
   imports = [
     ./hardware/hardware-configuration.nix
@@ -25,8 +16,6 @@ in {
       "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
     }/nixos"
   ];
-
-  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
 
   home-manager = {
     users.robson = import ../../home {
