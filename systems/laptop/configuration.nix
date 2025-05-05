@@ -54,12 +54,9 @@ in {
   users.users.robson = {
     isNormalUser = true;
     description = "robson";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [ libreoffice-qt ];
   };
-
-  # Docker configuration for rootless mode
-  virtualisation.docker.enable = true;
 
   # TODO: Review: https://search.nixos.org/options?channel=24.11&from=0&size=50&sort=relevance&type=packages&query=tailscale
   services.tailscale.enable = true;

@@ -39,8 +39,10 @@ in {
   boot.kernelPackages = pkgs.linuxPackages_6_12;
 
   # Use the systemd-boot EFI boot loader.
-  networking.hostName = "nixos";
-  networking.hostId = "e3e68db8";
+  networking = {
+    hostId = "e3e68db8";
+    hostName = "nixos";
+  };
 
   # Disable GNOME3 auto-suspend feature
   systemd.targets = {
@@ -63,7 +65,6 @@ in {
   # Enabled services
   services = {
     openssh.enable = true;
-
     vscode-server.enable = true;
     tailscale.enable = true;
   };

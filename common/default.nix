@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./system.nix ./desktop.nix ];
+  imports = [ ./desktop.nix ./docker.nix ./system.nix ];
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
