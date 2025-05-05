@@ -1,6 +1,13 @@
 { config, lib, pkgs, ... }:
 
 {
+  imports = [
+    "${
+      builtins.fetchTarball
+      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
+    }/nixos"
+  ];
+
   # Boot configuration
   boot = {
     loader = {
@@ -27,4 +34,6 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
+
+  system.stateVersion = "24.11";
 }

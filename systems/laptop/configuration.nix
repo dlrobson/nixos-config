@@ -1,16 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let
-  variables = import ./variables.nix;
-
-  # Define unstable here at the top level
-  unstableTarball = fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-
-  unstable = import unstableTarball {
-    config = { allowUnfree = true; };
-    inherit (pkgs) system;
-  };
+let variables = import ./variables.nix;
 in {
   imports = [
     ./hardware/hardware-configuration.nix
@@ -19,33 +9,13 @@ in {
     ./services/syncthing-settings.nix
     ../../common
     ../../modules/services/kmonad.nix
-    "${
-      builtins.fetchTarball
-      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
-    }/nixos"
-    "${
-      builtins.fetchTarball
-      "https://github.com/ryantm/agenix/archive/main.tar.gz"
-    }/modules/age.nix"
+    ../../modules/services/home-manager.nix
   ];
 
-  environment.systemPackages = [
-    (pkgs.callPackage "${
-        builtins.fetchTarball
-        "https://github.com/ryantm/agenix/archive/main.tar.gz"
-      }/pkgs/agenix.nix" { })
-  ];
-
-  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
-
-  home-manager = {
-    users.robson = import ../../home {
-      username = "robson";
-      homeDirectory = "/home/robson";
-      inherit config pkgs lib;
-    };
-    useGlobalPkgs = true;
-    useUserPackages = true;
+  customModules.services.homeManager = {
+    enable = true;
+    username = "robson";
+    homeDirectory = "/home/robson";
   };
 
   networking.hostName = "nixos-laptop";
@@ -66,6 +36,4 @@ in {
     device = "/dev/input/event0";
     configPath = builtins.toString ../../home/kmonad/thinkpad.kbd;
   };
-
-  system.stateVersion = "24.11";
 }

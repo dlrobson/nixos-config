@@ -1,8 +1,13 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./desktop.nix ./docker.nix ./system.nix ];
+  imports = [
+    ./agenix.nix
+    ./desktop.nix
+    ./docker.nix
+    ./system.nix
+    ./unstable-pkgs.nix
+  ];
 
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 }

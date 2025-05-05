@@ -1,38 +1,19 @@
 { config, lib, pkgs, ... }:
-let
-  variables = import ./variables.nix;
-
-  # Define unstable here at the top level
-  unstableTarball = fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-
-  unstable = import unstableTarball {
-    config = { allowUnfree = true; };
-    inherit (pkgs) system;
-  };
+let variables = import ./variables.nix;
 in {
   imports = [
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
     ../../common
+    ../../modules/services/home-manager.nix
     (fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master")
-    "${
-      builtins.fetchTarball
-      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
-    }/nixos"
   ];
 
-  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
-
-  home-manager = {
-    users.admin = import ../../home {
-      username = "admin";
-      homeDirectory = "/home/admin";
-      inherit config pkgs lib;
-    };
-    useGlobalPkgs = true;
-    useUserPackages = true;
+  customModules.services.homeManager = {
+    enable = true;
+    username = "admin";
+    homeDirectory = "/home/admin";
   };
 
   # TODO: Required for 5G ethernet. Remove once this is the default kernel version
@@ -68,6 +49,4 @@ in {
     vscode-server.enable = true;
     tailscale.enable = true;
   };
-
-  system.stateVersion = "24.11";
 }
