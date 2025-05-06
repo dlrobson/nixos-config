@@ -1,21 +1,56 @@
 { config, lib, pkgs, ... }:
-let variables = import ./variables.nix;
+let variables = import ../variables.nix;
 in {
   imports = [
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
     ./services/restic.nix
-    ./services/syncthing-settings.nix
     ../../common
     ../../modules/services/home-manager.nix
+    ../../modules/services/syncthing.nix
     (fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master")
   ];
 
-  customModules.services.homeManager = {
-    enable = true;
-    username = "admin";
-    homeDirectory = "/home/admin";
+  customModules.services = {
+    homeManager = {
+      enable = true;
+      username = "admin";
+      homeDirectory = "/home/admin";
+    };
+    syncthing = {
+      enable = true;
+      user = "admin";
+      dataDir = "/mnt/storage/data/sync-storage/";
+      configDir = "/mnt/storage/data/sync-storage/.config/syncthing";
+      guiAddress = "0.0.0.0:8384";
+      guiUser = lib.optionalString (variables ? syncthing_gui_user)
+        variables.syncthing_gui_user;
+      guiPassword = lib.optionalString (variables ? syncthing_gui_password)
+        variables.syncthing_gui_password;
+      devices = {
+        "laptop" = { id = variables.syncthing_laptop_id; };
+        "gill_laptop" = { id = variables.synthing_gill_laptop_id; };
+      };
+      folders = {
+        gillAndDanShared = {
+          enable = true;
+          path = "/mnt/storage/data/sync-storage/gill-and-dan-shared";
+          devices = [ "laptop" "gill_laptop" ];
+        };
+        danFiles = {
+          enable = true;
+          path = "/mnt/storage/data/sync-storage/dan-files";
+          devices = [ "laptop" ];
+        };
+        camera = {
+          enable = true;
+          path = "/mnt/storage/data/sync-storage/sm-g950w_nd8z-photos";
+          devices = [ "laptop" ];
+        };
+      };
+      openFirewall = true;
+    };
   };
 
   # TODO: Required for 5G ethernet. Remove once this is the default kernel version
@@ -51,11 +86,5 @@ in {
     tailscale.enable = true;
   };
 
-  # Firewall configuration
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 
-      8384 # Allow Syncthing web UI
-    ];
-  };
+  # Firewall configuration is now handled by the syncthing module
 }
