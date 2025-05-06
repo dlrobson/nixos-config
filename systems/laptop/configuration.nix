@@ -48,6 +48,7 @@ in {
           devices = [ "server" ];
         };
       };
+      openFirewall = true;
     };
   };
 
