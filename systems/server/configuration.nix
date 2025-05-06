@@ -5,6 +5,7 @@ in {
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
     ./services/restic.nix
+    ./services/syncthing-settings.nix
     ../../common
     ../../modules/services/home-manager.nix
     (fetchTarball
@@ -23,7 +24,7 @@ in {
   # Use the systemd-boot EFI boot loader.
   networking = {
     hostId = "e3e68db8";
-    hostName = "nixos";
+    hostName = "nixos-server";
   };
 
   # Disable GNOME3 auto-suspend feature
@@ -38,7 +39,6 @@ in {
     isNormalUser = true;
     description = "admin";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];
@@ -49,5 +49,13 @@ in {
     openssh.enable = true;
     vscode-server.enable = true;
     tailscale.enable = true;
+  };
+
+  # Firewall configuration
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 
+      8384 # Allow Syncthing web UI
+    ];
   };
 }

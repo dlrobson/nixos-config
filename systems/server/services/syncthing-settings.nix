@@ -5,11 +5,12 @@ in {
   # Syncthing configuration specific to laptop
   services.syncthing = {
     enable = true;
-    user = "robson";
-    dataDir = "/home/robson/Documents";
-    configDir = "/home/robson/Documents/.config/syncthing";
+    user = "admin";
+    dataDir = "/mnt/storage/data/sync-storage/";
+    configDir = "/mnt/storage/data/sync-storage/.config/syncthing";
     overrideDevices = true;
     overrideFolders = true;
+    guiAddress = "0.0.0.0:8384"; # TODO(dan): Don't use all interfaces
     settings = {
       options = {
         globalAnnounceEnabled = false;
@@ -20,21 +21,31 @@ in {
         password = lib.optionalString (variables ? syncthing_gui_password)
           variables.syncthing_gui_password;
       };
-      devices = { "server" = { id = variables.syncthing_server_id; }; };
+      devices = {
+        "laptop" = { id = variables.syncthing_laptop_id; };
+        "gill_laptop" = { id = variables.synthing_gill_laptop_id; };
+      };
       folders = {
         "Gill and Dan Shared Folder" = {
-          path = "/home/robson/Documents/gill-and-dan-shared";
-          devices = [ "server" ];
+          path = "/mnt/storage/data/sync-storage/gill-and-dan-shared";
+          devices = [
+            "laptop"
+            "gill_laptop"
+          ];
           id = "7vpz3-ngn9u";
         };
         "Dan files" = {
-          path = "/home/robson/Documents/dan-files";
-          devices = [ "server" ];
+          path = "/mnt/storage/data/sync-storage/dan-files";
+          devices = [
+            "laptop"
+          ];
           id = "rihg3-aiqta";
         };
         "Camera" = {
-          path = "/home/robson/Pictures/sm-g950w_nd8z-photos";
-          devices = [ "server" ];
+          path = "/mnt/storage/data/sync-storage/sm-g950w_nd8z-photos";
+          devices = [
+            "laptop"
+          ];
           id = "sm-g950w_nd8z-photos";
         };
       };
