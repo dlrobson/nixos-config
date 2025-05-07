@@ -77,6 +77,11 @@ in {
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];
+    # TODO(dan): This doesn't work. timer maybe better?
+    # crontab = ''
+    #   # Print Docker version every morning at 3 AM
+    #   0 3 * * * docker compose --profile "*" --project-directory /home/admin/dev/service-config-with-tailcale-serve up -d
+    # '';
   };
 
   # Enabled services
