@@ -19,6 +19,7 @@
       repositoryFile = config.age.secrets."restic/bucket".path;
       passwordFile = config.age.secrets."restic/password".path;
 
+      # TODO(dan): Add the other paths
       paths = [ "${config.users.users.admin.home}/dev" ];
 
       pruneOpts = [ "--keep-daily 7" "--keep-weekly 5" "--keep-monthly 12" ];
