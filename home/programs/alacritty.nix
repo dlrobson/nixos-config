@@ -3,6 +3,6 @@
 {
   programs.alacritty = {
     enable = true;
-    package = pkgs.unstable.alacritty;
+    package = config.lib.nixGL.wrap pkgs.unstable.alacritty;
   };
 }

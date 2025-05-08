@@ -1,10 +1,13 @@
 { config, lib, pkgs, username, homeDirectory, ... }:
 
 let
-  unstableTarball = fetchTarball
+  unstableTarball = builtins.fetchTarball
     "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
 
   unstable = import unstableTarball { config = { allowUnfree = true; }; };
+
+  nixglTarball = builtins.fetchTarball
+    "https://github.com/nix-community/nixGL/archive/main.tar.gz";
 
   isContainer = builtins.pathExists "/.dockerenv"
     || lib.pathExists "/run/.containerenv";
@@ -12,6 +15,9 @@ let
   isNixOS = builtins.pathExists "/etc/nixos";
 in {
   nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
+
+  # TODO(dan): https://github.com/nix-community/nixGL/issues/114#issuecomment-2741822320
+  nixGL.packages = import nixglTarball { inherit pkgs; };
 
   imports = [
     ./programs/bash.nix
