@@ -73,15 +73,38 @@ in {
   users.users.admin = {
     isNormalUser = true;
     description = "admin";
+    linger = true;
     extraGroups = [ "networkmanager" "wheel" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];
-    # TODO(dan): This doesn't work. timer maybe better?
-    # crontab = ''
-    #   # Print Docker version every morning at 3 AM
-    #   0 3 * * * docker compose --profile "*" --project-directory /home/admin/dev/service-config-with-tailcale-serve up -d
-    # '';
+  };
+
+  home-manager.users.admin.systemd.user = {
+    services.start-docker-services = {
+      Unit = {
+        Description = "Pull and Start Docker services";
+        After = [ "docker.service" ];
+      };
+      Service = {
+        Type = "oneshot";
+        # The %t is a systemd specifier that expands to the runtime directory path (/run/user/$UID).
+        # This is where the docker socket is for rootless docker.
+        Environment = [ "DOCKER_HOST=unix://%t/docker.sock" ];
+        ExecStart =
+          "${pkgs.docker}/bin/docker compose --profile '*' --project-directory ${variables.docker_compose_project_dir} up -d";
+      };
+    };
+
+    timers.start-docker-services = {
+      Timer = {
+        # Sometimes the `depends_on` option doesn't work after a reboot.
+        OnBootSec = "30s";
+        OnCalendar = "Sat *-*-* 03:00:00";
+        Persistent = true;
+        Unit = "start-docker-services.service";
+      };
+    };
   };
 
   # Enabled services
