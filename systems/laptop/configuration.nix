@@ -57,7 +57,7 @@ in {
   users.users.robson = {
     isNormalUser = true;
     description = "robson";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [ libreoffice-qt ];
   };
 
