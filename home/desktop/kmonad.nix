@@ -13,7 +13,7 @@ in {
     # Install KMonad package
     home.packages = with pkgs; [ kmonad ];
 
-    home.file = { ".config/thinkpad.kbd".source = ./kmonad/thinkpad.kbd; };
+    home.file = { ".config/thinkpad.kbd".source = ../../assets/thinkpad.kbd; };
 
     systemd.user.services.kmonad-mapping = {
       Unit = { Description = "Start KMonad with custom mapping"; };

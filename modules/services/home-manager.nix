@@ -19,7 +19,7 @@ in {
   config = lib.mkIf cfg.enable {
     home-manager = {
       users.${cfg.username} = { config, lib, pkgs, ... }: {
-        imports = [ ../../new-home ];
+        imports = [ ../../home ];
 
         # Enable the home manager configuration with the parameters from the module
         home-manager-configuration = {

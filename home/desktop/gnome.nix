@@ -14,32 +14,33 @@ in {
     enable = mkEnableOption "Whether to enable the GNOME configuration";
     homeDirectory = mkOption {
       type = types.str;
-      default = builtins.getEnv "HOME";
       description = "The home directory of the user.";
     };
   };
 
-  config = mkIf cfg.enable {
-    dconf.settings = lib.mkIf hasDbus {
-      "org/gnome/settings-daemon/plugins/media-keys" = {
-        custom-keybindings = [
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
-        ];
-      };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
-        {
-          binding = "<Primary><Alt>t";
-          command = "alacritty";
-          name = "open-terminal";
+  config = mkMerge [
+    (mkIf cfg.enable {
+      dconf.settings = lib.mkIf hasDbus {
+        "org/gnome/settings-daemon/plugins/media-keys" = {
+          custom-keybindings = [
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+          ];
         };
-    };
-  };
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
+          {
+            binding = "<Primary><Alt>t";
+            command = "alacritty";
+            name = "open-terminal";
+          };
+      };
+    })
 
-  # This displays home-manager applications on non-NixOS systems
-  config = mkIf (cfg.enable && !isNixOS) {
-    targets.genericLinux.enable = true;
-    xdg.mime.enable = true;
-    xdg.systemDirs.data =
-      [ "${cfg.homeDirectory}/.nix-profile/share/applications" ];
-  };
+    # This displays home-manager applications on non-NixOS systems
+    (mkIf (cfg.enable && !isNixOS) {
+      targets.genericLinux.enable = true;
+      xdg.mime.enable = true;
+      xdg.systemDirs.data =
+        [ "${cfg.homeDirectory}/.nix-profile/share/applications" ];
+    })
+  ];
 }
