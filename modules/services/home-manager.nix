@@ -18,9 +18,16 @@ in {
 
   config = lib.mkIf cfg.enable {
     home-manager = {
-      users.${cfg.username} = import ../../home {
-        inherit (cfg) username homeDirectory;
-        inherit config pkgs lib;
+      users.${cfg.username} = { config, lib, pkgs, ... }: {
+        imports = [ ../../new-home ];
+
+        # Enable the home manager configuration with the parameters from the module
+        home-manager-configuration = {
+          enable = true;
+          username = cfg.username;
+          homeDirectory = cfg.homeDirectory;
+          desktopConfigEnable = true;
+        };
       };
       useGlobalPkgs = true;
       useUserPackages = true;

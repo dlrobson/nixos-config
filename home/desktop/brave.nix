@@ -2,7 +2,6 @@
 
 {
   programs.chromium = {
-    enable = true;
     package = pkgs.unstable.brave;
     extensions = [
       { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden

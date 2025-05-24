@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 
 {
+  imports = [ ../../common/unstable-pkgs.nix ];
+
   programs.rbw = {
     enable = true;
     package = pkgs.unstable.rbw;
