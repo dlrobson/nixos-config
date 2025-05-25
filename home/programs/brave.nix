@@ -3,7 +3,7 @@
 {
   programs.chromium = {
     enable = true;
-    package = pkgs.unstable.brave;
+    package = config.lib.nixGL.wrap pkgs.brave;
     extensions = [
       { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
       { id = "neebplgakaahbhdphmkckjjcegoiijjo"; } # Keepa

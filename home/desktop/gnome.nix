@@ -2,6 +2,7 @@
 
 let
   hasDbus = builtins.pathExists "/etc/dbus-1/session.conf"
+    || builtins.pathExists "/etc/dbus-1/session.d"
     || builtins.pathExists "/run/current-system/sw/share/dbus-1/session.conf";
 in {
   dconf.settings = lib.mkIf hasDbus {
