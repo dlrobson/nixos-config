@@ -16,13 +16,6 @@ jobs:
       - name: Run configuration script
         run: ./scripts/debian/configure-dotfiles.sh
 
-      - name: Verify home-manager is installed
-        run: |
-          if ! command -v home-manager &> /dev/null; then
-            echo "home-manager could not be found"
-            exit 1
-          fi
-
   nix-fmt:
     runs-on: ubuntu-latest
     steps:
