@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 
 {
-  # Power management settings for the laptop
   services = {
 
     power-profiles-daemon.enable = false;

@@ -3,14 +3,14 @@
 let
   homeDirectory = builtins.getEnv "HOME";
   username = builtins.getEnv "USER";
+  desktopConfigEnable = builtins.getEnv "ENABLE_DESKTOP_CONFIG" != "";
 in {
-  # This displays home-manager applications in the system tray
-  targets.genericLinux.enable = true;
-  xdg.mime.enable = true;
-  xdg.systemDirs.data = [ "${homeDirectory}/.nix-profile/share/applications" ];
+  imports = [ ./home ];
 
-  imports =
-    [ (import ./home { inherit config pkgs lib homeDirectory username; }) ];
+  home-manager-configuration = {
+    enable = true;
+    inherit desktopConfigEnable username homeDirectory;
+  };
 
   nixpkgs.config.allowUnfree = true;
 }

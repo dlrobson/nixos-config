@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ../../common/unstable-pkgs.nix ];
+
   programs.git = {
     enable = true;
     userName = "Daniel Robson";

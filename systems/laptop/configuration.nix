@@ -68,6 +68,6 @@ in {
     enable = true;
     username = "robson";
     device = "/dev/input/event0";
-    configPath = builtins.toString ../../home/kmonad/thinkpad.kbd;
+    configPath = builtins.toString ../../assets/thinkpad.kbd;
   };
 }

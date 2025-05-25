@@ -1,39 +1,37 @@
-{ config, lib, pkgs, username, homeDirectory, ... }:
-
-let
-  unstableTarball = fetchTarball
-    "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-
-  unstable = import unstableTarball { config = { allowUnfree = true; }; };
-
-  isContainer = builtins.pathExists "/.dockerenv"
-    || lib.pathExists "/run/.containerenv";
-
-  isNixOS = builtins.pathExists "/etc/nixos";
+{ lib, pkgs, config, ... }:
+with lib;
+let cfg = config.home-manager-configuration;
 in {
-  nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ];
+  imports = [ ./programs ./desktop ];
 
-  imports = [
-    ./programs/bash.nix
-    ./programs/fish.nix
-    ./programs/git.nix
-    ./programs/rbw.nix
-    ./programs/tmux.nix
-    ./programs/vim.nix
-  ] ++ lib.optionals (!isContainer) [
-    ./desktop/gnome.nix
-    ./programs/alacritty.nix
-    ./programs/brave.nix
-    ./programs/vscode.nix
-  ] ++ lib.optional ((!isContainer) && (!isNixOS)) ./programs/kmonad.nix;
-
-  programs = {
-    home-manager.enable = true;
-    htop.enable = true;
+  options.home-manager-configuration = {
+    enable = mkEnableOption "enable home-manager configuration";
+    desktopConfigEnable =
+      mkEnableOption "enable home-manager desktop configuration";
+    username = mkOption {
+      type = types.str;
+      description = ''
+        The username of the user to manage.
+        This is usually the same as the current user.
+      '';
+    };
+    homeDirectory = mkOption {
+      type = types.str;
+      description = ''
+        The home directory of the user to manage.
+        This is usually the same as the current user's home directory.
+      '';
+    };
   };
 
-  home = {
-    inherit username homeDirectory;
-    stateVersion = "24.11";
+  config = mkIf cfg.enable {
+    home = {
+      inherit (cfg) username homeDirectory;
+      stateVersion = "24.11";
+    };
+    home-manager-desktop-configuration.enable = cfg.desktopConfigEnable;
+    home-manager-desktop-configuration.homeDirectory = cfg.homeDirectory;
+
+    programs = { htop.enable = true; };
   };
 }

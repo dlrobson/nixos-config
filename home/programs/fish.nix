@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ../../common/unstable-pkgs.nix ];
+
   programs.fish = {
     enable = true;
     package = pkgs.unstable.fish;
@@ -25,8 +27,9 @@
         inherit (pkgs.fishPlugins.hydro) src;
       }
     ];
-
+    shellAbbrs = { grbo = "git rebase --onto"; };
     functions = {
+      # TODO(dan): This lists the current branch, which can sometimes error
       clean_branches = ''
         git fetch --all --prune
         set branches_to_delete (git for-each-ref --format='%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)' refs/heads/ | string match -v ''')

@@ -107,12 +107,9 @@ in {
     };
   };
 
-  # Enabled services
   services = {
     openssh.enable = true;
     vscode-server.enable = true;
     tailscale.enable = true;
   };
-
-  # Firewall configuration is now handled by the syncthing module
 }
