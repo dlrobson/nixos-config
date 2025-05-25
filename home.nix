@@ -3,13 +3,13 @@
 let
   homeDirectory = builtins.getEnv "HOME";
   username = builtins.getEnv "USER";
+  desktopConfigEnable = builtins.getEnv "ENABLE_DESKTOP_CONFIG" != "";
 in {
   imports = [ ./home ];
 
-  # Enable the home-manager configuration
   home-manager-configuration = {
     enable = true;
-    desktopConfigEnable = true;
+    desktopConfigEnable = desktopConfigEnable;
     username = username;
     homeDirectory = homeDirectory;
   };

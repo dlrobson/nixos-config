@@ -40,12 +40,22 @@ install_home_manager() {
 }
 
 deploy_home_manager() {
+    local enable_desktop_config="$1"
+    
     echo "Deploying home-manager configuration..."
     SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
     REPO_ROOT=$(dirname "$(dirname "$SCRIPT_DIR")")
     
-    # Deploy home-manager configuration. Replace conflicting files with .backup
-    if ! home-manager switch -b backup -f "$REPO_ROOT/home.nix"; then
+    # Set message based on desktop configuration
+    if [ -n "$enable_desktop_config" ]; then
+        echo "Desktop configuration enabled"
+    else
+        echo "Desktop configuration disabled (default)"
+    fi
+    
+    # Deploy home-manager configuration with environment variable set for the command only
+    # Replace conflicting files with .backup
+    if ! ENABLE_DESKTOP_CONFIG="$enable_desktop_config" home-manager switch -b backup -f "$REPO_ROOT/home.nix"; then
         echo "Error: Failed to apply home-manager configuration"
         return 1
     fi
@@ -53,7 +63,48 @@ deploy_home_manager() {
     return 0
 }
 
+parse_arguments() {
+    local enable_desktop_config=""
+    local show_help=false
+    
+    # Parse command line arguments
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --desktop)
+                enable_desktop_config=1
+                ;;
+            --help)
+                show_help=true
+                ;;
+            *)
+                echo "Error: Unknown option $1"
+                exit 1
+                ;;
+        esac
+        shift
+    done
+    
+    # Display help
+    if [ "$show_help" = true ]; then
+        echo "Usage: $0 [OPTIONS]"
+        echo
+        echo "Options:"
+        echo "  --desktop      Enable desktop configuration (GUI apps and settings)"
+        echo "  --help         Show this help message"
+        echo
+        echo "By default, desktop configuration is not installed."
+        exit 0
+    fi
+    
+    # Return values through echo
+    echo "$enable_desktop_config"
+}
+
 main() {
+    # Parse arguments and store the return value
+    local enable_desktop_config
+    enable_desktop_config=$(parse_arguments "$@")
+    
     if ! _command_exists nix; then
         echo "Error: Nix is required but not installed."
         echo "Please install Nix first: https://nixos.org/download.html"
@@ -66,7 +117,7 @@ main() {
         exit 1
     fi
 
-    if ! deploy_home_manager; then
+    if ! deploy_home_manager "$enable_desktop_config"; then
         echo "Failed to deploy home-manager"
         exit 1
     fi
@@ -74,4 +125,5 @@ main() {
     echo "Home-manager setup and configuration complete! Please ensure either bash or fish is your default shell."
 }
 
-main
+# Call main with all script arguments
+main "$@"
