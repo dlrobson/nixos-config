@@ -1,7 +1,11 @@
 { config, pkgs, ... }:
 
-{
-  imports = [ ../../common/unstable-pkgs.nix ];
+let isNixOS = builtins.pathExists "/etc/nixos";
+in {
+  imports = [ ../../common/unstable-pkgs.nix ../../common/nixgl-pkgs.nix ];
 
-  programs.alacritty.package = pkgs.unstable.alacritty;
+  programs.alacritty.package = if isNixOS then
+    pkgs.unstable.alacritty
+  else
+    config.lib.nixGL.wrap pkgs.unstable.alacritty;
 }
