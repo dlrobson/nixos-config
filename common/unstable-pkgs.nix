@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  unstableTarball = fetchTarball
+  unstableTarball = builtins.fetchTarball
     "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
 
   unstable = import unstableTarball {

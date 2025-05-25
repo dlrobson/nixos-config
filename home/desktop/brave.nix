@@ -1,8 +1,15 @@
 { config, pkgs, ... }:
 
-{
+let isNixOS = builtins.pathExists "/etc/nixos";
+in {
+  imports = [ ../../common/nixgl-pkgs.nix ];
+
   programs.chromium = {
-    package = pkgs.unstable.brave;
+    package = if isNixOS then
+      pkgs.brave
+    else
+      config.lib.nixGL.wrap pkgs.brave pkgs.brave;
+
     extensions = [
       { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
       { id = "neebplgakaahbhdphmkckjjcegoiijjo"; } # Keepa
