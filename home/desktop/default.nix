@@ -14,8 +14,10 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.alacritty.enable = true;
-    programs.chromium.enable = true; # brave
-    programs.vscode.enable = true;
+    programs = {
+      alacritty.enable = true;
+      chromium.enable = true;
+      vscode.enable = true;
+    };
   };
 }

@@ -41,13 +41,11 @@ in {
   options.customModules.services.syncthing = {
     enable = mkEnableOption "Syncthing service";
 
-    # User configuration
     user = mkOption {
       type = types.str;
       description = "User under which Syncthing runs";
     };
 
-    # Directory configuration
     dataDir = mkOption {
       type = types.str;
       description = "Directory where Syncthing data is stored";
@@ -58,7 +56,6 @@ in {
       description = "Directory where Syncthing configuration is stored";
     };
 
-    # GUI configuration
     guiAddress = mkOption {
       type = types.str;
       default = "127.0.0.1:8384";
@@ -77,14 +74,12 @@ in {
       description = "Password for the Syncthing UI";
     };
 
-    # Device configuration
     devices = mkOption {
       type = types.attrsOf (types.attrsOf types.anything);
       default = { };
       description = "Syncthing devices configuration";
     };
 
-    # Predefined folders configuration
     folders = {
       gillAndDanShared = {
         enable = mkEnableOption "Gill and Dan Shared Folder";
@@ -126,7 +121,6 @@ in {
       };
     };
 
-    # Firewall configuration
     openFirewall = mkOption {
       type = types.bool;
       default = false;

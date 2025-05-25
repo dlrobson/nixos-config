@@ -21,12 +21,10 @@ in {
       users.${cfg.username} = { config, lib, pkgs, ... }: {
         imports = [ ../../home ];
 
-        # Enable the home manager configuration with the parameters from the module
         home-manager-configuration = {
           enable = true;
-          username = cfg.username;
-          homeDirectory = cfg.homeDirectory;
           desktopConfigEnable = true;
+          inherit (cfg) homeDirectory username;
         };
       };
       useGlobalPkgs = true;

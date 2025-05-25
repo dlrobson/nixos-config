@@ -27,7 +27,7 @@
         inherit (pkgs.fishPlugins.hydro) src;
       }
     ];
-    # TODO(dan): Add abbreviation for git rebase --onto
+    shellAbbrs = { grbo = "git rebase --onto"; };
     functions = {
       # TODO(dan): This lists the current branch, which can sometimes error
       clean_branches = ''

@@ -9,9 +9,7 @@ in {
 
   home-manager-configuration = {
     enable = true;
-    desktopConfigEnable = desktopConfigEnable;
-    username = username;
-    homeDirectory = homeDirectory;
+    inherit desktopConfigEnable username homeDirectory;
   };
 
   nixpkgs.config.allowUnfree = true;

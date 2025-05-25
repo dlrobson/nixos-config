@@ -27,7 +27,6 @@ in {
     # Add user to the required groups for KMonad
     users.users.${cfg.username}.extraGroups = [ "input" "uinput" ];
 
-    # Configure KMonad service
     services.kmonad = {
       enable = true;
       keyboards = {

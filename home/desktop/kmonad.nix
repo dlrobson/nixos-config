@@ -10,7 +10,6 @@ in {
   };
 
   config = mkIf (cfg.enable && !isNixOS) {
-    # Install KMonad package
     home.packages = with pkgs; [ kmonad ];
 
     home.file = { ".config/thinkpad.kbd".source = ../../assets/thinkpad.kbd; };
