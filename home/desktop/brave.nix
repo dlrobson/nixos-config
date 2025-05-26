@@ -8,7 +8,7 @@ in {
     package = if isNixOS then
       pkgs.brave
     else
-      config.lib.nixGL.wrap pkgs.brave pkgs.brave;
+      config.lib.nixGL.wrap pkgs.brave;
 
     extensions = [
       { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
