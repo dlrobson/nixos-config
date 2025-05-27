@@ -1,7 +1,6 @@
 { lib, pkgs, config, ... }:
 with lib;
-let
-  isNixOS = builtins.pathExists "/etc/nixos";
+let isNixOS = builtins.pathExists "/etc/nixos";
 in {
   config = mkIf (!isNixOS) {
     home.packages = with pkgs; [ kmonad ];
