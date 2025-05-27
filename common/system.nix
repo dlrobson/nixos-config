@@ -5,7 +5,7 @@
     "${
       builtins.fetchTarball
       # TODO(dan): Update this to 25.05 once working.
-      "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
+      "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz"
     }/nixos"
   ];
 
