@@ -4,6 +4,7 @@
   imports = [
     "${
       builtins.fetchTarball
+      # TODO(dan): Update this to 25.05 once working.
       "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz"
     }/nixos"
   ];
@@ -35,5 +36,5 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 }

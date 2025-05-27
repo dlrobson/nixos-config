@@ -61,7 +61,7 @@ in {
     packages = with pkgs; [ libreoffice-qt ];
   };
 
-  # TODO: Review: https://search.nixos.org/options?channel=24.11&from=0&size=50&sort=relevance&type=packages&query=tailscale
+  # TODO: Review: https://search.nixos.org/options?channel=25.05&from=0&size=50&sort=relevance&type=packages&query=tailscale
   services.tailscale.enable = true;
 
   customModules.services.kmonad = {

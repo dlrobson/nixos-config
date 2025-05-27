@@ -1,11 +1,15 @@
 #!/bin/sh
 set -eu
 
+# Global variable for desktop configuration
+ENABLE_DESKTOP_CONFIG=""
+
 # Private helper functions
 _command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# TODO(dan): This installation doesn't seem to work as expected on Ubuntu.
 install_home_manager() {
     if _command_exists home-manager; then
         echo "home-manager is already installed."
@@ -14,7 +18,7 @@ install_home_manager() {
 
     echo "Installing home-manager..."
 
-    if ! nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz home-manager; then
+    if ! nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager; then
         echo "Error: Failed to add home-manager channel"
         return 1
     fi
@@ -24,13 +28,11 @@ install_home_manager() {
         return 1
     fi
 
-    # Install home-manager
     if ! nix-shell '<home-manager>' -A install; then
         echo "Error: Failed to install home-manager"
         return 1
     fi
 
-    # Validate installation
     if ! _command_exists home-manager; then
         echo "Error: home-manager installation failed"
         return 1
@@ -64,17 +66,22 @@ deploy_home_manager() {
 }
 
 parse_arguments() {
-    local enable_desktop_config=""
-    local show_help=false
-    
     # Parse command line arguments
     while [ $# -gt 0 ]; do
         case "$1" in
             --desktop)
-                enable_desktop_config=1
+                echo "Enabling desktop configuration (GUI apps and settings)"
+                ENABLE_DESKTOP_CONFIG=1
                 ;;
             --help)
-                show_help=true
+                echo "Usage: $0 [OPTIONS]"
+                echo
+                echo "Options:"
+                echo "  --desktop      Enable desktop configuration (GUI apps and settings)"
+                echo "  --help         Show this help message"
+                echo
+                echo "By default, desktop configuration is not installed."
+                exit 0
                 ;;
             *)
                 echo "Error: Unknown option $1"
@@ -83,27 +90,11 @@ parse_arguments() {
         esac
         shift
     done
-    
-    # Display help
-    if [ "$show_help" = true ]; then
-        echo "Usage: $0 [OPTIONS]"
-        echo
-        echo "Options:"
-        echo "  --desktop      Enable desktop configuration (GUI apps and settings)"
-        echo "  --help         Show this help message"
-        echo
-        echo "By default, desktop configuration is not installed."
-        exit 0
-    fi
-    
-    # Return values through echo
-    echo "$enable_desktop_config"
 }
 
 main() {
-    # Parse arguments and store the return value
-    local enable_desktop_config
-    enable_desktop_config=$(parse_arguments "$@")
+    # Parse arguments and set global variables
+    parse_arguments "$@"
     
     if ! _command_exists nix; then
         echo "Error: Nix is required but not installed."
@@ -117,7 +108,7 @@ main() {
         exit 1
     fi
 
-    if ! deploy_home_manager "$enable_desktop_config"; then
+    if ! deploy_home_manager "$ENABLE_DESKTOP_CONFIG"; then
         echo "Failed to deploy home-manager"
         exit 1
     fi

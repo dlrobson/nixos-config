@@ -27,7 +27,7 @@ in {
   config = mkIf cfg.enable {
     home = {
       inherit (cfg) username homeDirectory;
-      stateVersion = "24.11";
+      stateVersion = "25.05";
     };
     home-manager-desktop-configuration.enable = cfg.desktopConfigEnable;
     home-manager-desktop-configuration.homeDirectory = cfg.homeDirectory;
