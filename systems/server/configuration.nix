@@ -74,10 +74,30 @@ in {
     isNormalUser = true;
     description = "admin";
     linger = true;
-    extraGroups = [ "networkmanager" "wheel" ];
+    subUidRanges = [ { count = 65534; startUid = 100000; } ];
+    subGidRanges = [ { count = 65534; startGid = 100000; } ];
+    # TODO(dan): Use a hashed password for consistent bringup
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];
+  };
+
+  # Create service user for running server applications
+  users.groups.service-user = {};
+  users.users.service-user = {
+    isNormalUser = true;
+    description = "Service User for Server Applications";
+    group = "service-user";
+    # TODO(dan): Remove this group
+    extraGroups = [ "wheel" ];
+    linger = true;
+    subUidRanges = [ { count = 65534; startUid = 200000; } ];
+    subGidRanges = [ { count = 65534; startGid = 200000; } ];
+    hashedPassword = null;  # No password login allowed
+    # openssh.authorizedKeys.keys = [
+      # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"  # Use the same key or a different one
+    # ];
   };
 
   home-manager.users.admin.systemd.user = {
@@ -88,11 +108,8 @@ in {
       };
       Service = {
         Type = "oneshot";
-        # The %t is a systemd specifier that expands to the runtime directory path (/run/user/$UID).
-        # This is where the docker socket is for rootless docker.
-        Environment = [ "DOCKER_HOST=unix://%t/docker.sock" ];
         ExecStart =
-          "${pkgs.docker}/bin/docker compose --profile '*' --project-directory ${variables.docker_compose_project_dir} up -d";
+          "${pkgs.docker}/bin/docker --context rootless compose --profile '*' --project-directory ${variables.docker_compose_project_dir} up -d";
       };
     };
 
