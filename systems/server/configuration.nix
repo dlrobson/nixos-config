@@ -53,9 +53,6 @@ in {
     };
   };
 
-  # TODO: Required for 5G ethernet. Remove once this is the default kernel version
-  boot.kernelPackages = pkgs.linuxPackages_6_12;
-
   # Use the systemd-boot EFI boot loader.
   networking = {
     hostId = "e3e68db8";
