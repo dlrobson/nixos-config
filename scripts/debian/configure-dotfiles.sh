@@ -28,7 +28,7 @@ install_home_manager() {
         return 1
     fi
 
-    if ! nix-shell '<home-manager>' -A install; then
+    if ! nix-env -iA home-manager.home-manager; then
         echo "Error: Failed to install home-manager"
         return 1
     fi
