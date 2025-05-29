@@ -9,7 +9,6 @@ _command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# TODO(dan): This installation doesn't seem to work as expected on Ubuntu.
 install_home_manager() {
     if _command_exists home-manager; then
         echo "home-manager is already installed."
