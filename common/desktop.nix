@@ -26,8 +26,6 @@
     };
   };
 
-  # Sound with pipewire
-  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
   # Exclude some packages from the GNOME environment
@@ -48,7 +46,7 @@
     pkgs.gnome-logs
     pkgs.gnome-maps
     pkgs.gnome-music
-    # gnome-photos
+    pkgs.gnome-photos
     pkgs.gnome-screenshot
     pkgs.gnome-system-monitor
     pkgs.gnome-tour

@@ -53,9 +53,6 @@ in {
     };
   };
 
-  # TODO: Required for 5G ethernet. Remove once this is the default kernel version
-  boot.kernelPackages = pkgs.linuxPackages_6_12;
-
   # Use the systemd-boot EFI boot loader.
   networking = {
     hostId = "e3e68db8";
@@ -74,7 +71,17 @@ in {
     isNormalUser = true;
     description = "admin";
     linger = true;
-    extraGroups = [ "networkmanager" "wheel" ];
+    subUidRanges = [{
+      count = 65534;
+      startUid = 100000;
+    }];
+    subGidRanges = [{
+      count = 65534;
+      startGid = 100000;
+    }];
+    # TODO(dan): Use a hashed password for consistent bringup
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    # TODO(dan): Use the file option to load this
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];
@@ -88,11 +95,8 @@ in {
       };
       Service = {
         Type = "oneshot";
-        # The %t is a systemd specifier that expands to the runtime directory path (/run/user/$UID).
-        # This is where the docker socket is for rootless docker.
-        Environment = [ "DOCKER_HOST=unix://%t/docker.sock" ];
         ExecStart =
-          "${pkgs.docker}/bin/docker compose --profile '*' --project-directory ${variables.docker_compose_project_dir} up -d";
+          "${pkgs.docker}/bin/docker --context rootless compose --profile '*' --project-directory ${variables.docker_compose_project_dir} up -d";
       };
     };
 

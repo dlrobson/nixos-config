@@ -7,8 +7,8 @@ in {
     ./hardware/luks.nix
     ./hardware/power-settings.nix
     ../../common
-    ../../modules/services/kmonad.nix
     ../../modules/services/home-manager.nix
+    ../../modules/services/kmonad.nix
     ../../modules/services/syncthing.nix
   ];
 
