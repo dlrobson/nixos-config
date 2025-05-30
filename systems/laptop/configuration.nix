@@ -6,10 +6,7 @@ in {
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
     ./hardware/power-settings.nix
-    ../../common
-    ../../modules/services/home-manager.nix
-    ../../modules/services/kmonad.nix
-    ../../modules/services/syncthing.nix
+    ../../modules
   ];
 
   customModules.services = {

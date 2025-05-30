@@ -5,9 +5,7 @@ in {
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
     ./services/restic.nix
-    ../../common
-    ../../modules/services/home-manager.nix
-    ../../modules/services/syncthing.nix
+    ../../modules
     (fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master")
   ];
