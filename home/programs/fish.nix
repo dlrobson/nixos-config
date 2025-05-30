@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../../common/unstable-pkgs.nix ];
+  imports = [ ../../modules/common/unstable-pkgs.nix ];
 
   programs.fish = {
     enable = true;
