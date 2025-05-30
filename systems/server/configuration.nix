@@ -71,30 +71,20 @@ in {
     isNormalUser = true;
     description = "admin";
     linger = true;
-    subUidRanges = [ { count = 65534; startUid = 100000; } ];
-    subGidRanges = [ { count = 65534; startGid = 100000; } ];
+    subUidRanges = [{
+      count = 65534;
+      startUid = 100000;
+    }];
+    subGidRanges = [{
+      count = 65534;
+      startGid = 100000;
+    }];
     # TODO(dan): Use a hashed password for consistent bringup
     extraGroups = [ "networkmanager" "wheel" "docker" ];
+    # TODO(dan): Use the file option to load this
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];
-  };
-
-  # Create service user for running server applications
-  users.groups.service-user = {};
-  users.users.service-user = {
-    isNormalUser = true;
-    description = "Service User for Server Applications";
-    group = "service-user";
-    # TODO(dan): Remove this group
-    extraGroups = [ "wheel" ];
-    linger = true;
-    subUidRanges = [ { count = 65534; startUid = 200000; } ];
-    subGidRanges = [ { count = 65534; startGid = 200000; } ];
-    hashedPassword = null;  # No password login allowed
-    # openssh.authorizedKeys.keys = [
-      # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"  # Use the same key or a different one
-    # ];
   };
 
   home-manager.users.admin.systemd.user = {

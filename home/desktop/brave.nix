@@ -2,7 +2,7 @@
 
 let isNixOS = builtins.pathExists "/etc/nixos";
 in {
-  imports = [ ../../common/nixgl-pkgs.nix ];
+  imports = [ ../common/nixgl-pkgs.nix ];
 
   programs.chromium = {
     package = if isNixOS then pkgs.brave else config.lib.nixGL.wrap pkgs.brave;
