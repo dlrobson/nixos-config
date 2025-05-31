@@ -52,13 +52,18 @@ Based on command history, here are some useful restic-daily commands:
 
 ## Age Secret Management
 
-To manage secrets with agenix:
+To edit secrets with agenix:
 
 ```bash
-# Edit encrypted secrets
 agenix -e restic/env.age
 agenix -e restic/bucket.age
 agenix -e restic/password.age
+```
+
+To re-key secrets with a new Age identity:
+
+```bash
+agenix -r
 ```
 
 ## Checking Backup Status

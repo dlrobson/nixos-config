@@ -4,7 +4,7 @@ in {
   imports = [
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
-    ./services/restic.nix
+    ./services
     ../../modules
     (fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master")
@@ -48,15 +48,6 @@ in {
         };
       };
       openFirewall = true;
-    };
-  };
-
-  # TODO(dan): Perhaps load all of this in an agenix module?
-  age = {
-    identityPaths =
-      [ "${config.users.users.admin.home}/.ssh/id_ed25519-agenix" ];
-    secrets = {
-      "passwords/server-admin".file = ../../secrets/passwords/server-admin.age;
     };
   };
 
