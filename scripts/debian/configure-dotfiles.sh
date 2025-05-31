@@ -1,7 +1,10 @@
 #!/bin/sh
 set -eu
 
-# Global variable for desktop configuration
+# Constants
+NIX_RELEASE_VERSION="25.05"
+
+# Global variables
 ENABLE_DESKTOP_CONFIG=""
 
 # Private helper functions
@@ -17,7 +20,7 @@ install_home_manager() {
 
     echo "Installing home-manager..."
 
-    if ! nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager; then
+    if ! nix-channel --add https://github.com/nix-community/home-manager/archive/release-${NIX_RELEASE_VERSION}.tar.gz home-manager; then
         echo "Error: Failed to add home-manager channel"
         return 1
     fi
@@ -37,6 +40,32 @@ install_home_manager() {
         return 1
     fi
 
+    return 0
+}
+
+validate_nixpkgs_version() {
+    echo "Validating nixpkgs version..."
+    current_version=$(nix-channel --list | grep "^nixpkgs" | grep -oE "[0-9]+\.[0-9]+" || echo "unknown")
+    
+    if [ "$current_version" != "$NIX_RELEASE_VERSION" ]; then
+        echo "Nixpkgs version doesn't match $NIX_RELEASE_VERSION (found: $current_version)"
+        echo "Setting nixpkgs to version $NIX_RELEASE_VERSION..."
+        
+        if ! nix-channel --add https://channels.nixos.org/nixos-${NIX_RELEASE_VERSION} nixpkgs; then
+            echo "Error: Failed to set nixpkgs version to $NIX_RELEASE_VERSION"
+            return 1
+        fi
+        
+        if ! nix-channel --update; then
+            echo "Error: Failed to update nixpkgs channel"
+            return 1
+        fi
+        
+        echo "Nixpkgs version updated to $NIX_RELEASE_VERSION"
+    else
+        echo "Nixpkgs version $NIX_RELEASE_VERSION already configured"
+    fi
+    
     return 0
 }
 
@@ -80,6 +109,7 @@ parse_arguments() {
                 echo "  --help         Show this help message"
                 echo
                 echo "By default, desktop configuration is not installed."
+                echo "This script will ensure nixpkgs is set to version $NIX_RELEASE_VERSION."
                 exit 0
                 ;;
             *)
@@ -104,6 +134,11 @@ main() {
 
     if ! install_home_manager; then
         echo "Failed to install home-manager"
+        exit 1
+    fi
+    
+    if ! validate_nixpkgs_version; then
+        echo "Failed to validate or update nixpkgs version"
         exit 1
     fi
 
