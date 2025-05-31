@@ -4,7 +4,7 @@ in {
   imports = [
     ./hardware/hardware-configuration.nix
     ./hardware/luks.nix
-    ./services/restic.nix
+    ./services
     ../../modules
     (fetchTarball
       "https://github.com/nix-community/nixos-vscode-server/tarball/master")
@@ -51,8 +51,6 @@ in {
     };
   };
 
-  age.identityPaths = [ "/home/admin/.ssh/id_ed25519-agenix" ];
-
   # Use the systemd-boot EFI boot loader.
   networking = {
     hostId = "e3e68db8";
@@ -79,9 +77,8 @@ in {
       count = 65534;
       startGid = 100000;
     }];
-    # TODO(dan): Use a hashed password for consistent bringup
+    hashedPasswordFile = config.age.secrets."passwords/server-admin".path;
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    # TODO(dan): Use the file option to load this
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];
