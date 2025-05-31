@@ -92,8 +92,10 @@ in {
       };
       Service = {
         Type = "oneshot";
-        ExecStart =
-          "${pkgs.docker}/bin/docker --context rootless compose --profile '*' --project-directory ${variables.docker_compose_project_dir} up -d";
+        ExecStart = ''
+          ${pkgs.docker}/bin/docker --context rootless compose --profile '*' --project-directory ${variables.docker_compose_project_dir} up -d
+          ${pkgs.docker}/bin/docker --context rootless image prune -f
+        '';
       };
     };
 
