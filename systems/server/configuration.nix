@@ -51,6 +51,8 @@ in {
     };
   };
 
+  age.identityPaths = [ "/home/admin/.ssh/id_ed25519-agenix" ];
+
   # Use the systemd-boot EFI boot loader.
   networking = {
     hostId = "e3e68db8";
