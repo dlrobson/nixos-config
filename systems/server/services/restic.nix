@@ -2,7 +2,8 @@
 
 {
   age = {
-    identityPaths = [ "${config.users.users.admin.home}/.ssh/id_ed25519" ];
+    identityPaths =
+      [ "${config.users.users.admin.home}/.ssh/id_ed25519-agenix" ];
     secrets = {
       "restic/env".file = ../../../secrets/restic/env.age;
       "restic/bucket".file = ../../../secrets/restic/bucket.age;

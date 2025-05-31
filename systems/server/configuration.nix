@@ -51,7 +51,14 @@ in {
     };
   };
 
-  age.identityPaths = [ "/home/admin/.ssh/id_ed25519-agenix" ];
+  # TODO(dan): Perhaps load all of this in an agenix module?
+  age = {
+    identityPaths =
+      [ "${config.users.users.admin.home}/.ssh/id_ed25519-agenix" ];
+    secrets = {
+      "passwords/server-admin".file = ../../secrets/passwords/server-admin.age;
+    };
+  };
 
   # Use the systemd-boot EFI boot loader.
   networking = {
@@ -79,9 +86,8 @@ in {
       count = 65534;
       startGid = 100000;
     }];
-    # TODO(dan): Use a hashed password for consistent bringup
+    hashedPasswordFile = config.age.secrets."passwords/server-admin".path;
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    # TODO(dan): Use the file option to load this
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
     ];

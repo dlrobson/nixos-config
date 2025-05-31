@@ -7,4 +7,5 @@ in {
   "restic/env.age".publicKeys = [ laptop server ];
   "restic/bucket.age".publicKeys = [ laptop server ];
   "restic/password.age".publicKeys = [ laptop server ];
+  "passwords/server-admin.age".publicKeys = [ server ];
 }
