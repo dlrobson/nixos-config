@@ -20,7 +20,7 @@
     };
     difftastic = {
       enable = true;
-      package = pkgs.unstable.difftastic;
+      package = config.unstablePkgs.difftastic;
     };
   };
 }

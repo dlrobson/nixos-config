@@ -5,7 +5,7 @@ in {
   imports = [ ../../modules/common/unstable-pkgs.nix ../common/nixgl-pkgs.nix ];
 
   programs.alacritty.package = if isNixOS then
-    pkgs.unstable.alacritty
+    config.unstablePkgs.alacritty
   else
-    config.lib.nixGL.wrap pkgs.unstable.alacritty;
+    config.lib.nixGL.wrap config.unstablePkgs.alacritty;
 }

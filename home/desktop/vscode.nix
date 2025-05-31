@@ -3,5 +3,5 @@
 {
   imports = [ ../../modules/common/unstable-pkgs.nix ];
 
-  programs.vscode.package = pkgs.unstable.vscode;
+  programs.vscode.package = config.unstablePkgs.vscode;
 }

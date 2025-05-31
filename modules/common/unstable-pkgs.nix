@@ -8,4 +8,14 @@ let
     config = { allowUnfree = true; };
     inherit (pkgs) system;
   };
-in { nixpkgs.overlays = [ (final: prev: { inherit unstable; }) ]; }
+in {
+  options = {
+    unstablePkgs = lib.mkOption {
+      type = lib.types.attrs;
+      description = "Unstable nixpkgs packages";
+      default = { };
+    };
+  };
+
+  config = { unstablePkgs = unstable; };
+}

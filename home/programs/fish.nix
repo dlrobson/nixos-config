@@ -5,7 +5,7 @@
 
   programs.fish = {
     enable = true;
-    package = pkgs.unstable.fish;
+    package = config.unstablePkgs.fish;
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
     '';
