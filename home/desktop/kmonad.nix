@@ -1,8 +1,14 @@
 { lib, pkgs, config, ... }:
 with lib;
-let isNixOS = builtins.pathExists "/etc/nixos";
+let
+  isNixOS = builtins.pathExists "/etc/nixos";
+  cfg = config.kmonad-setup;
 in {
-  config = mkIf (!isNixOS) {
+  imports = [ ];
+
+  options.kmonad-setup = { enable = mkEnableOption "Enable KMonad setup"; };
+
+  config = mkIf (cfg.enable && !isNixOS) {
     home.packages = with pkgs; [ kmonad ];
 
     home.file = { ".config/thinkpad.kbd".source = ../../assets/thinkpad.kbd; };
