@@ -19,5 +19,6 @@ in {
       chromium.enable = true;
       vscode.enable = true;
     };
+    kmonad-setup.enable = true;
   };
 }
