@@ -12,6 +12,12 @@
       keyFileSize = 8192;
       allowDiscards = true;
     };
+    "cryptroot2" = {
+      device = "/dev/disk/by-uuid/cff14f08-0712-4811-a67e-3eae4f2f2fab";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
     "crypthdda" = {
       device = "/dev/disk/by-uuid/0a36744b-7541-46cf-a697-1653f2024b3e";
       keyFile = "/dev/mapper/cryptkey";
@@ -38,6 +44,12 @@
     };
     "crypthdde" = {
       device = "/dev/disk/by-uuid/28d49dda-aa6c-4162-ad99-e7ab59660681";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
+    "crypthddf" = {
+      device = "/dev/disk/by-uuid/78465423-0c4d-4384-b3c7-68287c4336f9";
       keyFile = "/dev/mapper/cryptkey";
       keyFileSize = 8192;
       allowDiscards = true;
