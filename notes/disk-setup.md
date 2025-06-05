@@ -134,6 +134,46 @@ sudo zpool add hdd-pool raidz2 /dev/mapper/crypthddf /dev/mapper/crypthddg /dev/
 - `--keyfile-size 8192`: Uses a larger key for better security
 - `--allow-discards`: Permits TRIM/discard operations through the encryption layer, improving SSD performance and longevity, though with minor security implications
 
+## NVME Pool Mirror Setup
+
+### Converting single NVME to mirror
+
+To convert your single-drive NVME root pool to a mirrored configuration:
+
+1. Upgrade pool features:
+
+```bash
+# Enable all ZFS features
+sudo zpool upgrade nvme-pool
+```
+
+2. Prepare the second NVME drive:
+
+```bash
+# Format with LUKS2
+sudo cryptsetup luksFormat --type luks2 /dev/nvme1n1
+
+# Add keyfile (use same keyfile as original drive)
+sudo cryptsetup luksAddKey --new-keyfile-size 8192 /dev/nvme1n1 /dev/mapper/cryptkey
+
+# Open encrypted drive
+sudo cryptsetup luksOpen --keyfile-size 8192 --key-file /dev/mapper/cryptkey --allow-discards /dev/nvme1n1 cryptroot2
+```
+
+3. Attach to create mirror:
+
+```bash
+# Convert single drive to mirror (use the actual device name from zpool status)
+sudo zpool attach nvme-pool dm-uuid-CRYPT-LUKS2-40edc509941a4bbda43686ec9703fc18-cryptroot /dev/mapper/cryptroot2
+```
+
+4. Monitor resilver progress:
+
+```bash
+# Check resilver status
+sudo zpool status nvme-pool
+```
+
 ## Useful Commands
 
 ### Checking pool status and expansion progress
@@ -148,23 +188,3 @@ sudo zpool upgrade -v hdd-pool
 # Check specific feature status
 sudo zpool get all hdd-pool | grep raidz_expansion
 ```
-
-### Unmounting drives
-
-```bash
-# Unmount a temporarily mounted drive
-sudo umount /tmp/temp-mount
-
-# Force unmount if busy
-sudo umount -f /tmp/temp-mount
-
-# Lazy unmount (detaches immediately, cleans up when no longer busy)
-sudo umount -l /tmp/temp-mount
-```
-
-## Future Improvements
-
-### Adding another NVME drive to create a ZFS mirror
-
-For converting a single-disk ZFS root to a mirror, refer to:
-- [FreeBSD Forum Guide](https://forums.freebsd.org/threads/howto-convert-single-disk-zfs-on-root-to-mirror.49702/)
