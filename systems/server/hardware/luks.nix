@@ -42,6 +42,12 @@
       keyFileSize = 8192;
       allowDiscards = true;
     };
+    "crypthddf" = {
+      device = "/dev/disk/by-uuid/78465423-0c4d-4384-b3c7-68287c4336f9";
+      keyFile = "/dev/mapper/cryptkey";
+      keyFileSize = 8192;
+      allowDiscards = true;
+    };
   };
 
   environment.systemPackages = with pkgs;

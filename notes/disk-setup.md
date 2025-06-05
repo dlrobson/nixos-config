@@ -44,7 +44,7 @@ sudo zfs create -o compression=lz4 -o mountpoint=legacy hdd-pool/media
 ```
 
 **Why legacy mountpoints?**
-- `mountpoint=legacy`: Requied for nixos to manage the mount points
+- `mountpoint=legacy`: Required for nixos to manage the mount points
 
 ### 4. Create reserved space
 
@@ -72,32 +72,95 @@ sudo mount -t zfs hdd-pool/media /mnt/storage/media
 
 ## Adding New Disks
 
-### Adding a new encrypted HDD to the pool
+### Expanding an existing RAIDZ2 vdev
+
+To add a new drive to your existing RAIDZ2 vdev (recommended approach):
 
 1. Format the drive with LUKS2:
 
 ```bash
-sudo cryptsetup luksFormat --type luks2 /dev/sda1
+sudo cryptsetup luksFormat --type luks2 /dev/sdc1
 ```
 
 2. Add a keyfile for automatic unlocking:
 
 ```bash
-sudo cryptsetup luksAddKey --new-keyfile-size 8192 /dev/sda1 /dev/mapper/cryptkey
+sudo cryptsetup luksAddKey --new-keyfile-size 8192 /dev/sdc1 /dev/mapper/cryptkey
 ```
 
 3. Open the encrypted drive:
 
 ```bash
-sudo cryptsetup luksOpen --keyfile-size 8192 --key-file /dev/mapper/cryptkey --allow-discards /dev/sda1 crypthdda
+sudo cryptsetup luksOpen --keyfile-size 8192 --key-file /dev/mapper/cryptkey --allow-discards /dev/sdc1 crypthddf
 ```
 
-**Why these cryptsetup options?**
+4. Enable RAIDZ expansion feature (if not already enabled):
+
+```bash
+sudo zpool set feature@raidz_expansion=enabled hdd-pool
+```
+
+5. Attach the new drive to expand the existing RAIDZ2 vdev:
+
+```bash
+sudo zpool attach hdd-pool raidz2-0 /dev/mapper/crypthddf
+```
+
+6. Monitor expansion progress:
+
+```bash
+sudo zpool status hdd-pool
+```
+
+**Why use `zpool attach` instead of `zpool add`?**
+- Maintains consistent RAIDZ2 redundancy across all data
+- Better space efficiency compared to mixed vdev types
+- Avoids creating unbalanced pool with different redundancy levels
+
+### Adding a new vdev to the pool
+
+Alternatively, you can add drives as new vdevs (creates striped configuration):
+
+```bash
+# Add as single drive (not recommended - no redundancy)
+sudo zpool add hdd-pool /dev/mapper/crypthddf
+
+# Add as new RAIDZ2 vdev (requires 3+ drives)
+sudo zpool add hdd-pool raidz2 /dev/mapper/crypthddf /dev/mapper/crypthddg /dev/mapper/crypthddh
+```
+
+**Cryptsetup options explained:**
 - `--type luks2`: Uses the newer, more secure LUKS format
 - `--keyfile-size 8192`: Uses a larger key for better security
 - `--allow-discards`: Permits TRIM/discard operations through the encryption layer, improving SSD performance and longevity, though with minor security implications
 
-4. Add the opened device to your pool (not shown - use zpool add command)
+## Useful Commands
+
+### Checking pool status and expansion progress
+
+```bash
+# Check pool status and expansion progress
+sudo zpool status hdd-pool
+
+# List all pool features
+sudo zpool upgrade -v hdd-pool
+
+# Check specific feature status
+sudo zpool get all hdd-pool | grep raidz_expansion
+```
+
+### Unmounting drives
+
+```bash
+# Unmount a temporarily mounted drive
+sudo umount /tmp/temp-mount
+
+# Force unmount if busy
+sudo umount -f /tmp/temp-mount
+
+# Lazy unmount (detaches immediately, cleans up when no longer busy)
+sudo umount -l /tmp/temp-mount
+```
 
 ## Future Improvements
 

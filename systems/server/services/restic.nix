@@ -10,8 +10,8 @@
       repositoryFile = config.age.secrets."restic/bucket".path;
       passwordFile = config.age.secrets."restic/password".path;
 
-      paths = [ "/mnt/storage/data" "${config.users.users.admin.home}/*" ];
-      exclude = [ ".git" "target" ];
+      paths = [ "/mnt/storage/data" "${config.users.users.admin.home}" ];
+      exclude = [ ".git" "target" "${config.users.users.admin.home}/.*" ];
 
       pruneOpts = [ "--keep-daily 7" "--keep-weekly 5" "--keep-monthly 12" ];
     };
