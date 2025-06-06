@@ -21,7 +21,13 @@ in {
 
   config = mkMerge [
     (mkIf cfg.enable {
+      home.packages = with pkgs.gnomeExtensions;
+        [ sound-output-device-chooser ];
+
       dconf.settings = lib.mkIf hasDbus {
+        "org/gnome/shell".enabled-extensions =
+          map (extension: extension.extensionUuid) home.packages;
+
         "org/gnome/settings-daemon/plugins/media-keys" = {
           custom-keybindings = [
             "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
