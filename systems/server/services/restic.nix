@@ -11,7 +11,11 @@
       passwordFile = config.age.secrets."restic/password".path;
 
       paths = [ "/mnt/storage/data" "${config.users.users.admin.home}" ];
-      exclude = [ ".git" "target" "${config.users.users.admin.home}/.*" ];
+      exclude = [
+        ".git"
+        "target"
+        "${config.users.users.admin.home}/.local/share/docker"
+      ];
 
       pruneOpts = [ "--keep-daily 7" "--keep-weekly 5" "--keep-monthly 12" ];
     };
