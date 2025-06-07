@@ -13,8 +13,10 @@ in {
   customModules.services = {
     homeManager = {
       enable = true;
-      username = "admin";
-      homeDirectory = "/home/admin";
+      users = {
+        admin = { desktopEnable = true; };
+        service-user = { desktopEnable = false; };
+      };
     };
     syncthing = {
       enable = true;
@@ -65,26 +67,37 @@ in {
     hybrid-sleep.enable = false;
   };
 
-  users.users.admin = {
-    isNormalUser = true;
-    description = "admin";
-    linger = true;
-    subUidRanges = [{
-      count = 65534;
-      startUid = 100000;
-    }];
-    subGidRanges = [{
-      count = 65534;
-      startGid = 100000;
-    }];
-    hashedPasswordFile = config.age.secrets."passwords/server-admin".path;
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
-    ];
+  users.users = {
+    admin = {
+      isNormalUser = true;
+      description = "admin";
+      linger = true;
+      hashedPasswordFile = config.age.secrets."passwords/server-admin".path;
+      extraGroups = [ "networkmanager" "wheel" "docker" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
+      ];
+    };
+    service-user = {
+      isNormalUser = true;
+      description = "service-user";
+      linger = true;
+      subUidRanges = [{
+        count = 65534;
+        startUid = 100000;
+      }];
+      subGidRanges = [{
+        count = 65534;
+        startGid = 100000;
+      }];
+      extraGroups = [ "networkmanager" "wheel" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIc+tZ6XSUqF/7g4IPQXWojEYfa2VI92MrZol7UZV4jd"
+      ];
+    };
   };
 
-  home-manager.users.admin.systemd.user = {
+  home-manager.users.service-user.systemd.user = {
     services.start-docker-services = {
       Unit = {
         Description = "Pull and Start Docker services";

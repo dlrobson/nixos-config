@@ -12,8 +12,7 @@ in {
   customModules.services = {
     homeManager = {
       enable = true;
-      username = "robson";
-      homeDirectory = "/home/robson";
+      users = { robson = { desktopEnable = true; }; };
     };
     syncthing = {
       enable = true;
