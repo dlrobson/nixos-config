@@ -46,8 +46,7 @@ home-manager switch -b backup -f /path/to/this/repo/home.nix
 ├── systems/          # System-specific NixOS configurations
 ├── home/             # Home-manager configuration modules
 ├── scripts/          # Helper scripts for non-NixOS systems
-├── notes/            # Documentation and guides
-└── flake.nix         # Nix flake definition (if using flakes)
+└── notes/            # Documentation and guides
 ```
 
 ## Available Configurations
