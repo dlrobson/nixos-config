@@ -1,0 +1,137 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  debian-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "base"
+            args: ""
+          - name: "desktop"
+            args: "--desktop"
+
+    name: debian-test-${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+      - name: Run configuration script
+        run: ./scripts/debian/configure-dotfiles.sh --dry-run ${{ matrix.args }}
+      - name: Verify home-manager is installed
+        run: |
+          if ! command -v home-manager &> /dev/null; then
+            echo "home-manager could not be found"
+            exit 1
+          fi
+
+  nix-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+      - name: Check Nix formatting
+        run: |
+          echo "Checking Nix file formatting..."
+          nix-shell -p nixfmt-classic --run "find . -name \"*.nix\" -type f | xargs nixfmt --check"
+          if [ $? -ne 0 ]; then
+            echo "Error: Some Nix files are not properly formatted."
+            exit 1
+          fi
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+      - name: Check Nix formatting
+        run: |
+          echo "Checking Nix lints..."
+          nix-shell -p statix --run "statix check --ignore **/hardware-configuration.nix"
+          if [ $? -ne 0 ]; then
+            echo "Error: Some Nix files have linting issues."
+            exit 1
+          fi
+
+  find-systems:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+          SYSTEMS=$(find ./systems -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "matrix=${SYSTEMS}" >> $GITHUB_OUTPUT
+
+          # Validate that we found at least one system
+          SYSTEM_COUNT=$(echo $SYSTEMS | jq '. | length')
+          if [ "$SYSTEM_COUNT" -lt 1 ]; then
+            echo "Error: No system directories found in ./systems/"
+            exit 1
+          fi
+          echo "Found ${SYSTEM_COUNT} system(s) to test"
+
+  nixos-test:
+    needs: find-systems
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        system: ${{ fromJson(needs.find-systems.outputs.matrix) }}
+    name: nixos-${{ matrix.system }}-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+      - name: Generate variables.nix from template
+        run: |
+          # Generate variables.nix with test values
+          cat > ./secrets/variables.nix << 'EOF'
+          {
+            syncthing_gui_user = "";
+            syncthing_gui_password = "";
+            syncthing_server_id = "";
+            syncthing_laptop_id = "";
+            syncthing_gill_laptop_id = "";
+            docker_compose_project_dir = "";
+            tailnet = "";
+          }
+          EOF
+          echo "Generated variables.nix for CI testing"
+      - name: Create dummy secrets
+        run: |
+          # Array of dummy secrets to create (with subdirectories)
+          declare -a secrets=(
+            "forgejo/database-password.age"
+            "restic/env.age"
+            "restic/bucket.age"
+            "restic/password.age"
+            "passwords/server-admin.age"
+            "passwords/laptop-robson.age"
+          )
+
+          # Iterate over secrets and create dummy files
+          for secret in "${secrets[@]}"; do
+            # Create directory structure if it doesn't exist
+            mkdir -p "./secrets/$(dirname "$secret")"
+            # Create the dummy secret file
+            echo "dummy-content-for-${secret}" > "./secrets/${secret}"
+            echo "Created dummy secret: ${secret}"
+          done
+
+          # List created files for verification
+          find ./secrets -type f
+      - name: Run ${{ matrix.system }} configuration script
+        run: nix-build '<nixpkgs/nixos>' -A system -I nixos-config=./systems/${{ matrix.system }}/configuration.nix --dry-run

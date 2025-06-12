@@ -1,0 +1,20 @@
+{
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "jnoortheen.nix-ide"
+            ]
+        }
+    },
+    "image": "ghcr.io/xtruder/nix-devcontainer:v1.1.0",
+    "containerEnv": {
+        "USER": "code"
+    },
+    "postCreateCommand": {
+        "fixMountPermisions": "sudo chown code /home/code/.local /home/code/.local/share /home/code/.local/share/fish",
+        "packageInstall": "nix-env -iA nixpkgs.nixfmt-classic nixpkgs.statix nixpkgs.nil"
+    },
+    "mounts": [
+        "source=${localEnv:HOME}/.local/share/fish/fish_history,target=/home/code/.local/share/fish/fish_history,type=bind"
+    ]
+}
