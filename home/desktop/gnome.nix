@@ -43,7 +43,7 @@ in {
           "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
             {
               binding = "<Primary><Alt>t";
-              command = "alacritty";
+              command = "ghostty";
               name = "open-terminal";
             };
         };

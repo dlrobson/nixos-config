@@ -2,8 +2,7 @@
 with lib;
 let cfg = config.home-manager-desktop-configuration;
 in {
-  imports =
-    [ ./alacritty.nix ./brave.nix ./gnome.nix ./kmonad.nix ./vscode.nix ];
+  imports = [ ./ghostty.nix ./brave.nix ./gnome.nix ./kmonad.nix ./vscode.nix ];
 
   options.home-manager-desktop-configuration = {
     enable = mkEnableOption "Enable home-manager desktop configuration";
@@ -20,9 +19,11 @@ in {
     };
     kmonad-setup.enable = true;
     programs = {
-      alacritty.enable = true;
       chromium.enable = true;
       vscode.enable = true;
+      ghostty.enable = true;
     };
+
+    home.packages = with pkgs; [ discord ];
   };
 }
